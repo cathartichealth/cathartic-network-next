@@ -1,0 +1,15 @@
+projects:
+  catharticnetworknext:
+    schemaPath: amplify/backend/api/catharticnetworknext/build/schema.graphql
+    includes:
+      - src/graphql/**/*.js
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: javascript
+        generatedFileName: ''
+        docsFilePath: src/graphql
+        region: us-west-1
+        apiId: null
+        maxDepth: 2
