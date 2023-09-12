@@ -3,6 +3,8 @@ import { Amplify, Auth } from "aws-amplify";
 
 // REACT 
 import Head from 'next/head';
+import Card from '../components/card'; 
+import Accordion from '../components/accordion';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
@@ -17,6 +19,15 @@ export default function Home() {
         <h1 className={styles.title}>
           Welcome to the Cathartic Network!
         </h1>
+        
+        <Card title="Not sure?">
+          <Accordion title="Supplier Accordion" description="Picture/ Animation" />
+          <Accordion title="Client Accoridion" description="Definition" />
+        </Card>
+        
+        <Card title="">
+          <Accordion title="What is Cathartic Network?" description="Definition" />
+        </Card>
 
         <a href="/auth" className={styles.card}>
             <h3>Get started! &rarr;</h3>
