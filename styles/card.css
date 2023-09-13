@@ -1,0 +1,27 @@
+/* In your global CSS or module-specific CSS (e.g., Home.module.css) */
+.card {
+    /* border: 1px solid #ccc; */
+    padding: 10px;
+    margin: 10px; /* Add margin for spacing between cards */
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .card-content {
+    margin-top: 8px;
+  }
+  
+  .accordion-container {
+    display: flex;
+    justify-content: center; /* Horizontally center the accordions */
+    align-items: center; /* Vertically center the accordions */
+    padding:20px;
+    }
+  
+  /* Add additional styles to the .accordion class, if needed */
+  
