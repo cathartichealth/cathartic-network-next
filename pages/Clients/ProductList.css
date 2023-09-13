@@ -1,0 +1,42 @@
+/* ProductList.css */
+
+.product-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.title-product {
+    color: white;
+    font-size: 30px;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.product-box {
+    background-color: #811ea4;
+    color: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    width: calc(50% - 20px); /* Adjust the width as needed */
+    box-sizing: border-box;
+    border: 2px solid white;
+}
+
+.product-name {
+    font-size: 24px;
+    margin: 0;
+}
+
+.product-description,
+.product-quantity {
+    margin: 0;
+    font-size: 18px; /* Increase the font size */
+    text-align: center; /* Center text */
+}

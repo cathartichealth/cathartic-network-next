@@ -1,6 +1,7 @@
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
 import awsExports from "../src/aws-exports";
+import "../pages/Clients/ProductList.css";
 import "../styles/globals.css";
 
 Amplify.configure({ ...awsExports, ssr: true });
