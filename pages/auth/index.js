@@ -1,11 +1,13 @@
-import { Amplify } from 'aws-amplify';
-
+import { Amplify, Auth, API } from 'aws-amplify';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { CheckboxField, TextField } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
 import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
+
+import * as mutations from '../../amplify/';
+
 
 export default function Auth() {
   const formFields = {
@@ -67,7 +69,21 @@ export default function Auth() {
   }
 
   return (
-    <Authenticator formFields={formFields}>
+    <Authenticator 
+      formFields={formFields}
+      services={{
+        async validateCustomSignUp(formData) {
+          let first_name = 'custom' + ':' + 'first_name'
+          let last_name = 'custom' + ':' + 'last_name'
+          let role = 'custom' + ':' + 'role'
+          let company = 'custom' + ':' + 'company'
+          let company_position = 'custom' + ':' + 'company_position'
+
+          if 
+        },
+      }}
+    >
+    
       {({ signOut, user }) => (
         <main>
           <h1>Hello {user.username}</h1>
