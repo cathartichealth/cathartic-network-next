@@ -1,15 +1,59 @@
-import { Amplify, Auth, API } from 'aws-amplify';
+import { Amplify, Auth, API, graphqlOperation } from 'aws-amplify';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
+import { createUser } from '../../src/graphql/mutations'
 import { CheckboxField, TextField } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
 import awsExports from '../../src/aws-exports';
+import { create } from '@mui/material/styles/createTransitions';
 Amplify.configure(awsExports);
 
-import * as mutations from '../../amplify/';
 
 
-export default function Auth() {
+export default function UserAuth() {
+  const createDBUser = async (formData) => {
+    console.log(formData);
+    let { username, password, attributes } = formData;
+    
+    const userInput = {
+      input: {
+        first_name: attributes['custom:first_name'],
+        last_name: attributes['custom:last_name'],
+        email: username,
+        mobile: attributes['phone_number'],
+        company: attributes['custom:company'],
+        position: attributes['custom:company_position'],
+        location: attributes['custom:location'],
+        role: attributes['custom:role'] == "Client" ? "CLIENT" : "SUPPLIER"
+      },
+    };
+    
+    console.log(userInput)
+    const response = await API.graphql(graphqlOperation(createUser, userInput))
+    .then((response) => {
+      console.log("success")
+    })
+    .catch((response) => {
+      console.log("failed")
+      console.log(response)
+    })
+  }
+
+  const services = {
+    async handleSignUp (formData) {
+      createDBUser(formData)
+      let { username, password, attributes } = formData
+      return Auth.signUp({
+        username,
+        password,
+        attributes,
+        autoSignIn: {
+          enabled: true,
+        }
+      })
+    }
+  }
+
   const formFields = {
     signUp: {
       'custom:first_name': {
@@ -26,12 +70,14 @@ export default function Auth() {
       },
       email: {
         order: 3,
-        placeholder: "Enter your email"
+        placeholder: "Enter your email",
+        isRequired: true,
       },
       phone_number: {
         order: 4,
         label: "Phone Number",
         placeholder: "Enter your phone number",
+        isRequired: true,
       },
       'custom:role': {
         order: 5,
@@ -71,17 +117,7 @@ export default function Auth() {
   return (
     <Authenticator 
       formFields={formFields}
-      services={{
-        async validateCustomSignUp(formData) {
-          let first_name = 'custom' + ':' + 'first_name'
-          let last_name = 'custom' + ':' + 'last_name'
-          let role = 'custom' + ':' + 'role'
-          let company = 'custom' + ':' + 'company'
-          let company_position = 'custom' + ':' + 'company_position'
-
-          if 
-        },
-      }}
+      services={services}
     >
     
       {({ signOut, user }) => (
