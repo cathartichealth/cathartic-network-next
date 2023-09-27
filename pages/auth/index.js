@@ -1,6 +1,6 @@
 import { Amplify } from 'aws-amplify';
 
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
+import { Authenticator, useAuthenticator, useTheme, View, Image } from '@aws-amplify/ui-react';
 import { CheckboxField, TextField } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
@@ -8,6 +8,21 @@ import awsExports from '../../src/aws-exports';
 Amplify.configure(awsExports);
 
 export default function Auth() {
+  const components = {
+    Header() {
+      const { tokens } = useTheme();
+  
+      return (
+        <View textAlign="center" padding={tokens.space.medium}>
+          <Image
+            alt="cathartic logo"
+            src="https://www.cathartichealth.org/wp-content/uploads/2022/10/picsvg_download.svg"
+            style={{ width: 200, height: 200 }}
+          />
+        </View>
+      );
+    },
+  }
   const formFields = {
     signUp: {
       'custom:first_name': {
@@ -67,7 +82,7 @@ export default function Auth() {
   }
 
   return (
-    <Authenticator formFields={formFields}>
+    <Authenticator formFields={formFields} components={components}>
       {({ signOut, user }) => (
         <main>
           <h1>Hello {user.username}</h1>
