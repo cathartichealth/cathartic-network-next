@@ -24,7 +24,7 @@
     padding: 20px;
     margin: 10px;
     border-radius: 5px;
-    width: calc(50% - 20px); /* Adjust the width as needed */
+    /*width: calc(50% - 20px); !* Adjust the width as needed *!*/
     box-sizing: border-box;
     border: 2px solid white;
 }
@@ -35,7 +35,7 @@
 }
 
 .product-description,
-.product-quantity {
+.product-quantity, product-type {
     margin: 0;
     font-size: 18px; /* Increase the font size */
     text-align: center; /* Center text */
