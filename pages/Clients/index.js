@@ -16,7 +16,7 @@ function ProductList() {
                 const response = await API.graphql({ query: listProducts });
 
                 if (response.data && response.data.listProducts && response.data.listProducts.items) {
-                    const productsData = response.data.listProducts.items;
+                    const productsData = response.data.listProducts.items.filter(product => product._deleted !== true);
                     setProducts(productsData);
                 } else {
                     console.error('Response structure is not as expected:', response);
@@ -69,7 +69,7 @@ function ProductList() {
     };
 
     // Filter products by type
-    const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
+    const filteredProducts = filterType ? products.filter(product => product.type === filterType && product._deleted != true) : products;
 
     return (
         <div className="product-container">
