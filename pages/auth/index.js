@@ -130,6 +130,7 @@ export default function UserAuth() {
     .catch((response) => {
       console.log("failed")
       console.log(response)
+      console.log("")
     })
   }
 
