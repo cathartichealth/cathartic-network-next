@@ -1,0 +1,44 @@
+type Request @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  quantity: Int
+  clientID: ID! @index(name: "byUser")
+  productID: ID! @index(name: "byProduct")
+  supplierID: ID
+}
+
+enum ProgramEnum {
+  PERIOD_CARE
+  FOOT_HEALTH
+  SKIN_CARE
+}
+
+type Product @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  description: String
+  quantity: Int
+  type: ProgramEnum
+  unit: String
+  userID: ID! @index(name: "byUser")
+  Requests: [Request] @hasMany(indexName: "byProduct", fields: ["id"])
+}
+
+enum RoleEnum {
+  CLIENT
+  SUPPLIER
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  first_name: String
+  last_name: String
+  email: AWSEmail
+  mobile: AWSPhone
+  company: String
+  position: String
+  location: String
+  role: RoleEnum
+  Products: [Product] @hasMany(indexName: "byUser", fields: ["id"])
+  Requests: [Request] @hasMany(indexName: "byUser", fields: ["id"])
+}
+ 

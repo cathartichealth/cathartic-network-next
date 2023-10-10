@@ -12,7 +12,7 @@ Amplify.configure(awsExports);
 export default function UserAuth() {
   const createDBUser = async (formData) => {
     console.log(formData);
-    let { username, password, attributes } = formData;
+    let { username, attributes } = formData;
     console.log(attributes)
     const userInput = {
       input: {

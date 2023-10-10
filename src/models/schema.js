@@ -10,13 +10,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "productId": {
-                    "name": "productId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "quantity": {
                     "name": "quantity",
                     "isArray": false,
@@ -24,11 +17,25 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "userID": {
-                    "name": "userID",
+                "clientID": {
+                    "name": "clientID",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
+                    "attributes": []
+                },
+                "productID": {
+                    "name": "productID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "supplierID": {
+                    "name": "supplierID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
                     "attributes": []
                 },
                 "createdAt": {
@@ -60,7 +67,16 @@ export const schema = {
                     "properties": {
                         "name": "byUser",
                         "fields": [
-                            "userID"
+                            "clientID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byProduct",
+                        "fields": [
+                            "productID"
                         ]
                     }
                 },
@@ -135,6 +151,22 @@ export const schema = {
                     "type": "ID",
                     "isRequired": true,
                     "attributes": []
+                },
+                "Requests": {
+                    "name": "Requests",
+                    "isArray": true,
+                    "type": {
+                        "model": "Request"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "productID"
+                        ]
+                    }
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -283,7 +315,7 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "userID"
+                            "clientID"
                         ]
                     }
                 },
@@ -348,6 +380,6 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.4.0",
-    "version": "2f5baf2365f7cfb764885705aedf114d"
+    "codegenVersion": "3.4.2",
+    "version": "b5c5dc5d6f7173ddb0de8cd675ff8eb5"
 };
