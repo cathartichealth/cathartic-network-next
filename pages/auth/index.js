@@ -13,9 +13,9 @@ Amplify.configure(awsExports);
 
 
 export default function UserAuth() {
-  const checkEmailExsts = async(email) => {
+  const checkEmailExsts = async(uemail) => {
     try{
-      const response = await API.graphql(graphqlOperation(listUsers, { filter: { email: { eq: email } , _deleted : {eq: false}} }));
+      const response = await API.graphql(graphqlOperation(listUsers, { filter: { email: { eq: uemail } , _deleted : {ne: true}} }));
       console.log(response)
       if (response.data.listUsers.items.length > 0) {
         return true
@@ -31,43 +31,47 @@ export default function UserAuth() {
 
   const createDBUser = async (formData) => {
 
-    console.log(formData);
     let { username, attributes } = formData;
-
+    console.log("first")
+    console.log(formData)
     const emailExists = await checkEmailExsts(username)
     if (emailExists){
       alert("Email already exists")
-      return;
+      return null;
     }
-    let userrole = "SUPPLIER"
-    if (attributes['custom:role']===undefined){
-      userrole = "CLIENT"
-    }
+    else{
+      let userrole = "SUPPLIER"
+      if (attributes['custom:role']===undefined){
+        userrole = "CLIENT"
+      }
 
-    const userInput = {
-      input: {
-        first_name: attributes['custom:first_name'],
-        last_name: attributes['custom:last_name'],
-        email: username,
-        mobile: attributes['phone_number'],
-        company: attributes['custom:company'],
-        position: attributes['custom:company_position'],
-        location: attributes['custom:location'],
-        role: userrole
-      },
-    };
-    
-    console.log(userInput)
-    const response = await API.graphql(graphqlOperation(createUser, userInput))
-    console.log(response)
-    .then((response) => {
-      console.log("success")
-    })
-    .catch((response) => {
-      console.log("failed")
-      console.log(response)
-      console.log("")
-    })
+      const userInput = {
+        input: {
+          first_name: attributes['custom:first_name'],
+          last_name: attributes['custom:last_name'],
+          email: username,
+          mobile: attributes['phone_number'],
+          company: attributes['custom:company'],
+          position: attributes['custom:company_position'],
+          location: attributes['custom:location'],
+          role: userrole
+        },
+      };
+      
+      console.log("2nd", userInput)
+      try {
+        const response = await API.graphql(graphqlOperation(createUser, userInput));
+        console.log("DBuser has been created")
+        console.log(response);
+        console.log("success");
+        console.log(response.data.createUser.id)
+        return response.data.createUser.id;
+      } catch (error) {
+        console.log("failed");
+        console.log(error);
+        return null;
+      }
+    }
   }
   const components = {
     Header() {
@@ -85,11 +89,11 @@ export default function UserAuth() {
     },
     SignUp: {
       FormFields() {
-        const [isSupplier, setIsSupplier] = useState(false);
+        // const [isSupplier, setIsSupplier] = useState(false);
 
-        const handleCheckboxChange = (event) => {
-          setIsSupplier(event.target.checked);
-        };
+        // const handleCheckboxChange = (event) => {
+        //   setIsSupplier(event.target.checked);
+        // };
         return (
           <>
             <Authenticator.SignUp.FormFields />
@@ -109,14 +113,23 @@ export default function UserAuth() {
   }
   const services = {
     async handleSignUp (formData) {
-      createDBUser(formData)
+      let id = await createDBUser(formData)
+      console.log(id)
       let { username, password, attributes } = formData
+      console.log("HERE")
+      console.log(attributes)
+      let userrole = "SUPPLIER"
+      if (attributes['custom:role']===undefined){
+        userrole = "CLIENT"
+      }
+      attributes = {...attributes, 'custom:dataID': id,'custom:role':userrole }
+      console.log("FINAL", attributes)
       return Auth.signUp({
         username,
         password,
         attributes,
         autoSignIn: {
-          enabled: true,
+          enabled: true, 
         }
       })
     }
