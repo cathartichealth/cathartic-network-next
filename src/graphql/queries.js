@@ -299,3 +299,37 @@ export const syncUsers = /* GraphQL */ `
     }
   }
 `;
+
+export const listProductsByUser = /* GraphQL */ `
+  query ListProductsByUser(
+    $userID: ID!
+    $limit: Int
+    $nextToken: String
+  ) {
+    listProducts(
+      filter: {
+        userID: {
+          eq: $userID
+        }
+      }
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        description
+        quantity
+        type
+        unit
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+    }
+  }
+`;
+
