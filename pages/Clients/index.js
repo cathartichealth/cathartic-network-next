@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { listProducts } from '../../src/graphql/queries';
 import { createRequest } from '../../src/graphql/mutations';
+import { Grid, Card, Button, Flex, Heading, Image, Text, useTheme } from '@aws-amplify/ui-react';
+import CardGrid from '../../components/CardGrid'
+import '@aws-amplify/ui-react/styles.css';
+
 
 function ProductList() {
     const [products, setProducts] = useState([]);
@@ -70,6 +74,8 @@ function ProductList() {
 
     // Filter products by type
     const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
+    const { tokens } = useTheme();
+
 
     return (
         <div className="product-container">
@@ -83,22 +89,13 @@ function ProductList() {
                     <option value="SKIN_CARE">Skin Care</option>
                 </select>
             </div>
-            <div className="product-list">
-                {filteredProducts.map(product => (
-                    <div key={product.id} className="product-box">
-                        <h2 className="product-name">Name: {product.name}</h2>
-                        <p className="product-description">Description: {product.description}</p>
-                        <p className="product-quantity">Quantity: {product.quantity}</p>
-                        <p className="product-type">Product Type: {product.type}</p>
-                        <button
-                            className="request-button"
-                            onClick={() => handleRequestClick(product)}
-                        >
-                            Request
-                        </button>
-                    </div>
-                ))}
-            </div>
+            <Flex
+                direction="column"
+                justifyContent="flex-start"
+                alignItems="center"
+            >
+                <CardGrid items={filteredProducts}/>
+            </Flex>
             {isPopupOpen && (
                 <div className="popup-overlay">
                     <div className="popup">
