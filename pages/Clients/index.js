@@ -76,24 +76,20 @@ function ProductList() {
     const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
     const { tokens } = useTheme();
 
-
     return (
         <div className="product-container">
             <h1 className='title-product'>Product List</h1>
+            <div>
+                <label>Filter by Type:</label>
+                <select onChange={(e) => setFilterType(e.target.value)}>
+                    <option value="">All</option>
+                    <option value="PERIOD_CARE">Period Care</option>
+                    <option value="FOOT_HEALTH">Foot Health</option>
+                    <option value="SKIN_CARE">Skin Care</option>
+                </select>
+            </div>
             <div className="product-list">
-                {products.map(product => (
-                    <div key={product.id} className="product-box">
-                        <h2 className="product-name">Name: {product.name}</h2>
-                        <p className="product-description">Description: {product.description}</p>
-                        <p className="product-quantity">Quantity: {product.quantity}</p>
-                        <button
-                            className="request-button"
-                            onClick={() => handleRequestClick(product)}
-                        >
-                            Request
-                        </button>
-                    </div>
-                ))}
+                <CardGrid items={filteredProducts}></CardGrid>
             </div>
             {isPopupOpen && (
                 <div className="popup-overlay">
