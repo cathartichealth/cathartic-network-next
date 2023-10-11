@@ -3,17 +3,47 @@ import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { createUser } from '../../src/graphql/mutations'
 import { CheckboxField, TextField, useTheme, View, Image } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import { useState } from 'react';
 
 import awsExports from '../../src/aws-exports';
+import { listUsers } from '@/src/graphql/queries';
 Amplify.configure(awsExports);
 
 
 
+
 export default function UserAuth() {
+  const checkEmailExsts = async(email) => {
+    try{
+      const response = await API.graphql(graphqlOperation(listUsers, { filter: { email: { eq: email } , _deleted : {eq: false}} }));
+      console.log(response)
+      if (response.data.listUsers.items.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    } catch (error) {
+      console.error('Error fetching email', error)
+      return true
+    }
+    
+  }
+
   const createDBUser = async (formData) => {
+
     console.log(formData);
     let { username, attributes } = formData;
-    console.log(attributes)
+
+    const emailExists = await checkEmailExsts(username)
+    if (emailExists){
+      alert("Email already exists")
+      return;
+    }
+    let userrole = "SUPPLIER"
+    if (attributes['custom:role']===undefined){
+      userrole = "CLIENT"
+    }
+
     const userInput = {
       input: {
         first_name: attributes['custom:first_name'],
@@ -23,12 +53,13 @@ export default function UserAuth() {
         company: attributes['custom:company'],
         position: attributes['custom:company_position'],
         location: attributes['custom:location'],
-        role: attributes['custom:role'] == "yes" ? "CLIENT" : "SUPPLIER"
+        role: userrole
       },
     };
     
     console.log(userInput)
     const response = await API.graphql(graphqlOperation(createUser, userInput))
+    console.log(response)
     .then((response) => {
       console.log("success")
     })
@@ -54,6 +85,11 @@ export default function UserAuth() {
     },
     SignUp: {
       FormFields() {
+        const [isSupplier, setIsSupplier] = useState(false);
+
+        const handleCheckboxChange = (event) => {
+          setIsSupplier(event.target.checked);
+        };
         return (
           <>
             <Authenticator.SignUp.FormFields />
@@ -62,7 +98,9 @@ export default function UserAuth() {
               name="custom:role"
               value="yes"
               label="Check if you are a Supplier"
-              size= "medium"
+              size="medium"
+              // onChange={handleCheckboxChange}
+              // checked={isSupplier}
             />
           </>
         );
