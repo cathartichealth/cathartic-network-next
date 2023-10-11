@@ -76,6 +76,7 @@ export const createProduct = /* GraphQL */ `
     }
   }
 `;
+
 export const updateProduct = /* GraphQL */ `
   mutation UpdateProduct(
     $input: UpdateProductInput!
@@ -112,8 +113,8 @@ export const deleteProduct = /* GraphQL */ `
       userID
       createdAt
       updatedAt
-      _version
       _deleted
+      _version
       _lastChangedAt
     }
   }
