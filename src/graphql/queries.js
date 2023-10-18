@@ -5,9 +5,10 @@ export const getRequest = /* GraphQL */ `
   query GetRequest($id: ID!) {
     getRequest(id: $id) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -25,9 +26,10 @@ export const listRequests = /* GraphQL */ `
     listRequests(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        productId
         quantity
-        userID
+        clientID
+        productID
+        supplierID
         createdAt
         updatedAt
         _version
@@ -54,9 +56,10 @@ export const syncRequests = /* GraphQL */ `
     ) {
       items {
         id
-        productId
         quantity
-        userID
+        clientID
+        productID
+        supplierID
         createdAt
         updatedAt
         _version
@@ -68,16 +71,16 @@ export const syncRequests = /* GraphQL */ `
     }
   }
 `;
-export const requestsByUserID = /* GraphQL */ `
-  query RequestsByUserID(
-    $userID: ID!
+export const requestsByClientID = /* GraphQL */ `
+  query RequestsByClientID(
+    $clientID: ID!
     $sortDirection: ModelSortDirection
     $filter: ModelRequestFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    requestsByUserID(
-      userID: $userID
+    requestsByClientID(
+      clientID: $clientID
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -85,9 +88,42 @@ export const requestsByUserID = /* GraphQL */ `
     ) {
       items {
         id
-        productId
         quantity
-        userID
+        clientID
+        productID
+        supplierID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const requestsByProductID = /* GraphQL */ `
+  query RequestsByProductID(
+    $productID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    requestsByProductID(
+      productID: $productID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        quantity
+        clientID
+        productID
+        supplierID
         createdAt
         updatedAt
         _version
@@ -109,6 +145,10 @@ export const getProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version

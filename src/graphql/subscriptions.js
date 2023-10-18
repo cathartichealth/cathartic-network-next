@@ -5,9 +5,10 @@ export const onCreateRequest = /* GraphQL */ `
   subscription OnCreateRequest($filter: ModelSubscriptionRequestFilterInput) {
     onCreateRequest(filter: $filter) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -20,9 +21,10 @@ export const onUpdateRequest = /* GraphQL */ `
   subscription OnUpdateRequest($filter: ModelSubscriptionRequestFilterInput) {
     onUpdateRequest(filter: $filter) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -35,9 +37,10 @@ export const onDeleteRequest = /* GraphQL */ `
   subscription OnDeleteRequest($filter: ModelSubscriptionRequestFilterInput) {
     onDeleteRequest(filter: $filter) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -56,6 +59,10 @@ export const onCreateProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -74,6 +81,10 @@ export const onUpdateProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -92,6 +103,10 @@ export const onDeleteProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
