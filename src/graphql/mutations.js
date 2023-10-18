@@ -8,9 +8,10 @@ export const createRequest = /* GraphQL */ `
   ) {
     createRequest(input: $input, condition: $condition) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -26,9 +27,10 @@ export const updateRequest = /* GraphQL */ `
   ) {
     updateRequest(input: $input, condition: $condition) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -44,9 +46,10 @@ export const deleteRequest = /* GraphQL */ `
   ) {
     deleteRequest(input: $input, condition: $condition) {
       id
-      productId
       quantity
-      userID
+      clientID
+      productID
+      supplierID
       createdAt
       updatedAt
       _version
@@ -68,6 +71,10 @@ export const createProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -90,6 +97,10 @@ export const updateProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -111,6 +122,10 @@ export const deleteProduct = /* GraphQL */ `
       type
       unit
       userID
+      Requests {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _deleted
