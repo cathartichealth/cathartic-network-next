@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { API } from 'aws-amplify';
 import { listProducts } from '../../src/graphql/queries';
 import { createRequest } from '../../src/graphql/mutations';
+import { Grid, Card, Button, Flex, Heading, Image, Text, useTheme } from '@aws-amplify/ui-react';
+import CardGrid from '../../components/CardGrid'
+import '@aws-amplify/ui-react/styles.css';
+
 
 function ProductList() {
     const [products, setProducts] = useState([]);
@@ -58,7 +62,7 @@ function ProductList() {
 
             console.log('Request created:', response.data.createRequest);
 
-            // Handle any additional logic or UI updates as needed
+        // Handle any additional logic or UI updates as needed
         } catch (error) {
             console.error('Error creating request:', error);
         }
@@ -69,7 +73,8 @@ function ProductList() {
     };
 
     // Filter products by type
-    const filteredProducts = filterType ? products.filter(product => product.type === filterType && product._deleted != true) : products;
+    const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
+    const { tokens } = useTheme();
 
     return (
         <div className="product-container">
@@ -84,20 +89,7 @@ function ProductList() {
                 </select>
             </div>
             <div className="product-list">
-                {filteredProducts.map(product => (
-                    <div key={product.id} className="product-box">
-                        <h2 className="product-name">Name: {product.name}</h2>
-                        <p className="product-description">Description: {product.description}</p>
-                        <p className="product-quantity">Quantity: {product.quantity}</p>
-                        <p className="product-type">Product Type: {product.type}</p>
-                        <button
-                            className="request-button"
-                            onClick={() => handleRequestClick(product)}
-                        >
-                            Request
-                        </button>
-                    </div>
-                ))}
+                <CardGrid items={filteredProducts} buttonHandler={handleRequestClick}></CardGrid>
             </div>
             {isPopupOpen && (
                 <div className="popup-overlay">

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {API, graphqlOperation} from 'aws-amplify';
 import {listProductsByUser, getProduct} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
+import {Divider} from "@aws-amplify/ui-react";
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
@@ -172,7 +173,9 @@ const SupplierInterface = ({userId}) => {
             <h1>Product Table</h1>
             <table>
                 <tbody>
-                {products.map((product) => (
+                {products
+                    .filter((product) => !product._deleted)
+                    .map((product) => (
                     <tr key={product.id}>
                         {editedProductId === product.id ? (
                             // Edit mode
