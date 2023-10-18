@@ -1,0 +1,151 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifyb98e35e28f7a4-staging-184217-authRole",
+      "UnauthRoleArn": "arn:aws:iam::030267733627:role/amplify-amplifyb98e35e28f7a4-staging-184217-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::030267733627:role/amplify-amplifyb98e35e28f7a4-staging-184217-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-amplifyb98e35e28f7a4-staging-184217-deployment",
+      "UnauthRoleName": "amplify-amplifyb98e35e28f7a4-staging-184217-unauthRole",
+      "StackName": "amplify-amplifyb98e35e28f7a4-staging-184217",
+      "StackId": "arn:aws:cloudformation:us-west-1:030267733627:stack/amplify-amplifyb98e35e28f7a4-staging-184217/9d651440-45d2-11ee-a6b1-02c0499bc599",
+      "AmplifyAppId": "d8ij218kxr9dq"
+    }
+  },
+  "api": {
+    "catharticnetworknext": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 30,
+              "description": "api key description"
+            }
+          }
+        },
+        "GraphQLAPIIdOutput": "4xvyqzi6fbhfhf5dnhkdeoyxfa",
+        "GraphQLAPIEndpointOutput": "https://5f6fes6sjzecvdrltidnywl564.appsync-api.us-west-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-w2vavkwyananbdudenas52iemu"
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync",
+      "lastPushTimeStamp": "2023-09-22T04:32:28.357Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyb98e35e28f7a4-staging-184217-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apicatharticnetworknext"
+      },
+      "lastPushDirHash": "hv6r8D2PkYed8o1/YnJal6t89oc="
+    }
+  },
+  "auth": {
+    "catharticnetworknext": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
+            "REQUIRES_UPPERCASE"
+          ]
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "output": {
+        "UserPoolId": "us-west-1_nAVRicUTV",
+        "AppClientIDWeb": "5cpbc160culgduhmrdlkmbf8k2",
+        "AppClientID": "4bffv1rjrg3r3p1rrhie0v14e5",
+        "IdentityPoolId": "us-west-1:b4cf4e4a-d13f-48fe-afb3-21fa3db92e90",
+        "UserPoolArn": "arn:aws:cognito-idp:us-west-1:030267733627:userpool/us-west-1_nAVRicUTV",
+        "IdentityPoolName": "testAuthIdentityPool__staging",
+        "UserPoolName": "catharticnetworknext"
+      },
+      "lastPushTimeStamp": "2023-09-22T04:32:28.357Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyb98e35e28f7a4-staging-184217-deployment/amplify-cfn-templates/auth/catharticnetworknext-cloudformation-template.json",
+        "logicalId": "authcatharticnetworknext"
+      },
+      "lastPushDirHash": "AfOJKLyCYgg8BruK7O2IBTuN3gw="
+    }
+  },
+  "storage": {
+    "s3catharticnetworknextstorage016f545c": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3",
+      "output": {
+        "BucketName": "cathartic-network-next-storage-016f545c184217-staging",
+        "Region": "us-west-1"
+      },
+      "lastPushTimeStamp": "2023-09-22T04:32:28.357Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyb98e35e28f7a4-staging-184217-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storages3catharticnetworknextstorage016f545c"
+      },
+      "lastPushDirHash": "WGHTRpXr1HALHK8GioECeHIuwWc="
+    }
+  },
+  "function": {
+    "dynappPreSignup": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "catharticnetworknext",
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ]
+        }
+      ],
+      "lastPushTimeStamp": "2023-09-22T04:32:28.357Z",
+      "lastBuildTimeStamp": "2023-09-22T04:28:41.235Z",
+      "lastBuildType": "PROD",
+      "lastPackageTimeStamp": "2023-09-22T04:28:41.272Z",
+      "distZipFilename": "dynappPreSignup-716c6f36596d2f343069-build.zip",
+      "s3Bucket": {
+        "deploymentBucketName": "amplify-amplifyb98e35e28f7a4-staging-184217-deployment",
+        "s3Key": "amplify-builds/dynappPreSignup-716c6f36596d2f343069-build.zip"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplifyb98e35e28f7a4-staging-184217-deployment/amplify-cfn-templates/function/dynappPreSignup-cloudformation-template.json",
+        "logicalId": "functiondynappPreSignup"
+      },
+      "output": {
+        "LambdaExecutionRoleArn": "arn:aws:iam::030267733627:role/catharticnetworknextLambdaRoleb9c3e614-staging",
+        "Region": "us-west-1",
+        "Arn": "arn:aws:lambda:us-west-1:030267733627:function:dynappPreSignup-staging",
+        "Name": "dynappPreSignup-staging",
+        "LambdaExecutionRole": "catharticnetworknextLambdaRoleb9c3e614-staging"
+      },
+      "lastPushDirHash": "81RxYi33NFR1nxFcO4CbbYnXcuI="
+    }
+  }
+}
