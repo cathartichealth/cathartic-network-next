@@ -7,6 +7,17 @@ import { useRouter } from 'next/router';
 
 export default function SignUp(){
     const router = useRouter()
+    const [user, setUser] = useState({
+        "firstName": "",
+        "lastName": "",
+        "password": "",
+        "username": "",
+        "phone": "",
+        "company": "",
+        "position": "",
+        "location": "",
+        "confirm": false,
+    })
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [password, setPassword] = useState("")
@@ -98,36 +109,109 @@ export default function SignUp(){
             <div>
                 <div style={{margin: 10}}>
                     <label> First Name </label>
-                    <input type="text" onChange={(e) => {setFirstName(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"firstName": e.target.value}
+                                setUser({...user, ...updatedVal});
+                                console.log(user)
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <div style={{margin: 10}}>
                     <label> Last Name </label>
-                    <input type="text" onChange={(e) => {setLastName(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"lastName": e.target.value}
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 
                 <div style={{margin: 10}}>
                     <label> Email </label>
-                    <input type="text" onChange={(e) => {setUsername(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"username": e.target.value};
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <div style={{margin: 10}}>
                     <label> Phone </label>
-                    <input type="text" onChange={(e) => {setPhone(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"phone": e.target.value};
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <div style={{margin: 10}}>
                     <label> Company </label>
-                    <input type="text" onChange={(e) => {setCompany(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"company": e.target.value};
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <div style={{margin: 10}}>
                     <label> Position </label>
-                    <input type="text" onChange={(e) => {setPosition(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"position": e.target.value};
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <div style={{margin: 10}}>
                     <label> Location </label>
-                    <input type="text" onChange={(e) => {setLocation(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"location": e.target.value};
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <div style={{margin: 10}}>
                     <label> Password </label>
-                    <input type="text" onChange={(e) => {setPassword(e.target.value);}}></input>
+                    <input 
+                        type="text" 
+                        onChange={
+                            (e) => {
+                                let updatedVal = {"password": e.target.value};
+                                setUser({...user, ...updatedVal});
+                            }
+                        }
+                    >
+                    </input>
                 </div>
                 <button onClick={signUp}> Sign Up </button>
                 <div style={{margin: 10}}>
