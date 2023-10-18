@@ -1,0 +1,11 @@
+{
+  "resourceName": "s3catharticnetworknextstorage016f545c",
+  "bucketName": "cathartic-network-next-storage-016f545c",
+  "policyUUID": "31db0b29",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "DELETE"
+  ]
+}

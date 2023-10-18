@@ -1,0 +1,21 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifyb98e35e28f7a4-staging-184217-authRole",
+      "UnauthRoleArn": "arn:aws:iam::030267733627:role/amplify-amplifyb98e35e28f7a4-staging-184217-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::030267733627:role/amplify-amplifyb98e35e28f7a4-staging-184217-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-amplifyb98e35e28f7a4-staging-184217-deployment",
+      "UnauthRoleName": "amplify-amplifyb98e35e28f7a4-staging-184217-unauthRole",
+      "StackName": "amplify-amplifyb98e35e28f7a4-staging-184217",
+      "StackId": "arn:aws:cloudformation:us-west-1:030267733627:stack/amplify-amplifyb98e35e28f7a4-staging-184217/9d651440-45d2-11ee-a6b1-02c0499bc599",
+      "AmplifyAppId": "d8ij218kxr9dq",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-amplifyb98e35e28f7a4-staging-184217-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "catharticnetworknext": {}
+      }
+    }
+  }
+}

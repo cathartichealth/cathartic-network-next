@@ -21,9 +21,10 @@ type EagerRequest = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly productId?: string | null;
   readonly quantity?: number | null;
-  readonly userID: string;
+  readonly clientID: string;
+  readonly productID: string;
+  readonly supplierID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -34,9 +35,10 @@ type LazyRequest = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly productId?: string | null;
   readonly quantity?: number | null;
-  readonly userID: string;
+  readonly clientID: string;
+  readonly productID: string;
+  readonly supplierID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -59,6 +61,7 @@ type EagerProduct = {
   readonly type?: ProgramEnum | keyof typeof ProgramEnum | null;
   readonly unit?: string | null;
   readonly userID: string;
+  readonly Requests?: (Request | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -75,6 +78,7 @@ type LazyProduct = {
   readonly type?: ProgramEnum | keyof typeof ProgramEnum | null;
   readonly unit?: string | null;
   readonly userID: string;
+  readonly Requests: AsyncCollection<Request>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
