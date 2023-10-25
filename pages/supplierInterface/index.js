@@ -3,6 +3,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {listProductsByUser, getProduct} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
 import {Divider} from "@aws-amplify/ui-react";
+import CheckAuth from '../../components/CheckAuth'
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
@@ -19,6 +20,8 @@ const SupplierInterface = ({userId}) => {
 
 
     useEffect(() => {
+        CheckAuth()
+        
         async function fetchProducts() {
             try {
                 const response = await API.graphql(

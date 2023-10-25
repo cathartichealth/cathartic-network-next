@@ -4,8 +4,13 @@ import { listProducts } from '../../src/graphql/queries';
 import { createRequest } from '../../src/graphql/mutations';
 import { Grid, Card, Button, Flex, Heading, Image, Text, useTheme } from '@aws-amplify/ui-react';
 import CardGrid from '../../components/CardGrid'
+import CheckAuth from '../../components/CheckAuth'
 import '@aws-amplify/ui-react/styles.css';
 
+// NEXT
+import Head from 'next/head'
+import { useSession } from 'next-auth/react'
+import { useRouter } from "next/router"; // **updated**
 
 function ProductList() {
     const [products, setProducts] = useState([]);
@@ -13,8 +18,11 @@ function ProductList() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [requestedQuantity, setRequestedQuantity] = useState(1); // Default quantity is 1
     const [filterType, setFilterType] = useState(null); // Type filter
+    const router = useRouter();
 
     useEffect(() => {
+        CheckAuth()
+
         async function fetchProducts() {
             try {
                 const response = await API.graphql({ query: listProducts });
