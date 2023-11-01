@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
+import { Auth } from "aws-amplify";
 import {API, graphqlOperation} from 'aws-amplify';
 import {listProductsByUser, getProduct} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
 import {Divider} from "@aws-amplify/ui-react";
-import CheckAuth from '../../components/CheckAuth'
+
+import { useRouter } from "next/router"; // **updated**
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
@@ -18,9 +20,20 @@ const SupplierInterface = ({userId}) => {
     const [editedQuantity, setEditedQuantity] = useState('');
     const [editedType, setEditedType] = useState(''); // State for "Edit Product" dropdown
 
+    const router = useRouter();
 
     useEffect(() => {
-        CheckAuth()
+        const checkAuth = async () => {
+            const user = await Auth.currentAuthenticatedUser()
+            .then((userData) => {
+                console.log("user is authenticated")
+            })
+            .catch(() => {
+                router.push('.')
+            })
+        }
+
+        checkAuth()
         
         async function fetchProducts() {
             try {

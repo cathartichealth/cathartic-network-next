@@ -4,12 +4,10 @@ import { listProducts } from '../../src/graphql/queries';
 import { createRequest } from '../../src/graphql/mutations';
 import { Grid, Card, Button, Flex, Heading, Image, Text, useTheme } from '@aws-amplify/ui-react';
 import CardGrid from '../../components/CardGrid'
-import CheckAuth from '../../components/CheckAuth'
+import { Auth } from "aws-amplify";
 import '@aws-amplify/ui-react/styles.css';
 
 // NEXT
-import Head from 'next/head'
-import { useSession } from 'next-auth/react'
 import { useRouter } from "next/router"; // **updated**
 
 function ProductList() {
@@ -21,7 +19,17 @@ function ProductList() {
     const router = useRouter();
 
     useEffect(() => {
-        CheckAuth()
+        const checkAuth = async () => {
+            const user = await Auth.currentAuthenticatedUser()
+            .then((userData) => {
+                console.log("user is authenticated")
+            })
+            .catch(() => {
+                router.push('.')
+            })
+        }
+
+        checkAuth()
 
         async function fetchProducts() {
             try {
