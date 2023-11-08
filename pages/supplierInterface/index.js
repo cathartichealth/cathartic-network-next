@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {API, graphqlOperation} from 'aws-amplify';
-import {listProductsByUser, getProduct} from '@/src/graphql/queries';
+import {listProducts, getProduct} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
-import {Divider} from "@aws-amplify/ui-react";
+import CardGrid from '@/components/CardGrid';
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
@@ -22,10 +22,7 @@ const SupplierInterface = ({userId}) => {
         async function fetchProducts() {
             try {
                 const response = await API.graphql(
-                    graphqlOperation(listProductsByUser, {
-                        userID: 1,
-                    })
-                );
+                    graphqlOperation(listProducts, {filter: {userID: {eq: "1"}}}));
 
                 console.log('GraphQL Response:', response);
                 const productData = response.data.listProducts.items;

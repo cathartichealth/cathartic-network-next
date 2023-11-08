@@ -14,10 +14,10 @@ function ProductList() {
     const [requestedQuantity, setRequestedQuantity] = useState(1); // Default quantity is 1
     const [filterType, setFilterType] = useState(null); // Type filter
 
-    useEffect(() => {
-        async function fetchProducts() {
-            try {
-                const response = await API.graphql({ query: listProducts });
+    useEffect(() => {
+        async function fetchProducts() {
+            try {
+                const response = await API.graphql({ query: listProducts });
 
                 if (response.data && response.data.listProducts && response.data.listProducts.items) {
                     const productsData = response.data.listProducts.items.filter(product => product._deleted !== true);
@@ -30,50 +30,50 @@ function ProductList() {
             }
         }
 
-        fetchProducts();
-    }, []);
+        fetchProducts();
+    }, []);
 
-    const handleRequestClick = (product) => {
-        setSelectedProduct(product);
-        setIsPopupOpen(true);
-    };
+    const handleRequestClick = (product) => {
+        setSelectedProduct(product);
+        setIsPopupOpen(true);
+    };
 
-    const handlePopupClose = () => {
-        setIsPopupOpen(false);
-        setRequestedQuantity(1); // Reset quantity when closing the popup
-    };
+    const handlePopupClose = () => {
+        setIsPopupOpen(false);
+        setRequestedQuantity(1); // Reset quantity when closing the popup
+    };
 
-    const handleRequestSubmit = async () => {
-        try {
-            // Create a request using the GraphQL mutation
-            const requestInput = {
-                input: {
-                    quantity: requestedQuantity,
-                    clientID: 1,
-                    productID: selectedProduct.id, // Use productID as provided by your schema
-                    supplierID: selectedProduct.userID, // Use userID as provided by your schema
-                },
-            };
+    const handleRequestSubmit = async () => {
+        try {
+            // Create a request using the GraphQL mutation
+            const requestInput = {
+                input: {
+                    quantity: requestedQuantity,
+                    clientID: 1,
+                    productID: selectedProduct.id, // Use productID as provided by your schema
+                    supplierID: selectedProduct.userID, // Use userID as provided by your schema
+                },
+            };
 
-            const response = await API.graphql({
-                query: createRequest,
-                variables: requestInput,
-            });
+            const response = await API.graphql({
+                query: createRequest,
+                variables: requestInput,
+            });
 
-            console.log('Request created:', response.data.createRequest);
+            console.log('Request created:', response.data.createRequest);
 
-            // Handle any additional logic or UI updates as needed
-        } catch (error) {
-            console.error('Error creating request:', error);
-        }
+        // Handle any additional logic or UI updates as needed
+        } catch (error) {
+            console.error('Error creating request:', error);
+        }
 
-        setIsPopupOpen(false);
-        setSelectedProduct(null);
-        handlePopupClose();
-    };
+        setIsPopupOpen(false);
+        setSelectedProduct(null);
+        handlePopupClose();
+    };
 
-    // Filter products by type
-    const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
+    // Filter products by type
+    const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
     const { tokens } = useTheme();
 
     return (
@@ -89,7 +89,7 @@ function ProductList() {
                 </select>
             </div>
             <div className="product-list">
-                <CardGrid items={filteredProducts}></CardGrid>
+                <CardGrid items={filteredProducts} buttonHandler={handleRequestClick}></CardGrid>
             </div>
             {isPopupOpen && (
                 <div className="popup-overlay">
