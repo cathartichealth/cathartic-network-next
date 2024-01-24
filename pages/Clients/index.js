@@ -64,7 +64,6 @@ function ProductList() {
 
 
         // Handle any additional logic or UI updates as needed
-         main
         } catch (error) {
             console.error('Error creating request:', error);
         }
