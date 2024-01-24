@@ -15,6 +15,19 @@
     "categories": {
       "auth": {
         "catharticnetworknext": {}
+      },
+      "function": {
+        "dynappPreSignup": {
+          "deploymentBucketName": "amplify-amplifyb98e35e28f7a4-staging-184217-deployment",
+          "s3Key": "amplify-builds/dynappPreSignup-756c76507869774d6165-build.zip"
+        },
+        "catharticnetworknextPreSignup": {
+          "deploymentBucketName": "amplify-amplifyb98e35e28f7a4-staging-184217-deployment",
+          "s3Key": "amplify-builds/catharticnetworknextPreSignup-71315865546f44515736-build.zip"
+        }
+      },
+      "storage": {
+        "s3catharticnetworknextstorage016f545c": {}
       }
     }
   }
