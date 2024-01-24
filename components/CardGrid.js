@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Card, Button, Flex, Heading, Image, Text, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
-const CardGrid = ({ items }) => {
+const CardGrid = ({ items, buttonHandler }) => {
     // Divide the items into rows with three cards each
     const rows = [];
     for (let i = 0; i < items.length; i += 3) {
@@ -28,23 +28,20 @@ const CardGrid = ({ items }) => {
                 <Card 
                     variation="elevated"
                     style={{
-                        width: '35rem',
+                        width: '33%',
                         borderRadius: 400
                     }}
                     borderRadius={tokens.radii.large}
                 >
                     <Flex
                         direction={{ base: 'column', large: 'row' }}
-                        maxWidth="32rem"
                         alignItems="center"
-                        width="100%"
                     >
                         <Image
                             alt="Sample Product Image"
-                            height="10rem"
                             src="https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"
-                            width="10rem"
-                            marginRight="2rem"
+                            width="25%"
+                            marginRight="5%"
                             borderRadius={tokens.radii.large}
                         />
                  
@@ -67,7 +64,7 @@ const CardGrid = ({ items }) => {
                             <Button
                                 variation="primary"
                                 borderRadius={tokens.radii.medium}
-                                onClick={() => handleRequestClick(product)}
+                                onClick={() => buttonHandler(product)}
                             >
                                 Request
                             </Button>

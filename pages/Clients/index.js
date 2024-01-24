@@ -62,7 +62,9 @@ function ProductList() {
 
             console.log('Request created:', response.data.createRequest);
 
-            // Handle any additional logic or UI updates as needed
+
+        // Handle any additional logic or UI updates as needed
+         main
         } catch (error) {
             console.error('Error creating request:', error);
         }
@@ -89,7 +91,7 @@ function ProductList() {
                 </select>
             </div>
             <div className="product-list">
-                <CardGrid items={filteredProducts}></CardGrid>
+                <CardGrid items={filteredProducts} buttonHandler={handleRequestClick}></CardGrid>
             </div>
             {isPopupOpen && (
                 <div className="popup-overlay">
