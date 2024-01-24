@@ -380,6 +380,6 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.4.2",
+    "codegenVersion": "3.4.0",
     "version": "b5c5dc5d6f7173ddb0de8cd675ff8eb5"
 };

@@ -99,6 +99,40 @@
       "service": "Lambda"
     }
   },
+  "parameters": {
+    "AMPLIFY_function_catharticnetworknextPreSignup_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "catharticnetworknextPreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_catharticnetworknextPreSignup_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "catharticnetworknextPreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_dynappPreSignup_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dynappPreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_dynappPreSignup_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "dynappPreSignup"
+        }
+      ]
+    }
+  },
   "storage": {
     "s3catharticnetworknextstorage016f545c": {
       "dependsOn": [],
