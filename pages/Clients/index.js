@@ -62,6 +62,7 @@ function ProductList() {
 
             console.log('Request created:', response.data.createRequest);
 
+
         // Handle any additional logic or UI updates as needed
         } catch (error) {
             console.error('Error creating request:', error);
