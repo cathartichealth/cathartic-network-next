@@ -18,8 +18,6 @@ const SupplierInterface = ({userId}) => {
     const [editedType, setEditedType] = useState(''); // State for "Edit Product" dropdown
     const [isAddModalVisible, setAddModalVisible] = useState(false);
 
-    const modalRef = useRef();
-
     const handleAddIconClick = () => {
         console.log("hello help me I am NOT under the water")
         setAddModalVisible(true);
@@ -38,10 +36,7 @@ const SupplierInterface = ({userId}) => {
     };
 
     const handleModalClick = (e) => {
-    console.log("handling modal click")
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-        handleCloseModal();
-        }      
+    console.log("handling modal click")    
     };
 
 
@@ -315,52 +310,11 @@ const SupplierInterface = ({userId}) => {
                 </table>
             </div>
 
-            <h2 className="text-purple-800 text-2xl mt-4">Add Product</h2>
-            <div className="flex items-center mt-2">
-                <input
-                type="text"
-                placeholder="Name"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                className="px-4 py-2 border border-purple-800 rounded-l"
-                />
-                <input
-                type="text"
-                placeholder="Description"
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)}
-                className="px-4 py-2 border border-purple-800"
-                />
-                <input
-                type="number"
-                placeholder="Quantity"
-                value={newQuantity}
-                onChange={(e) => setNewQuantity(e.target.value)}
-                className="px-4 py-2 border border-purple-800"
-                />
-                <select
-                value={newType}
-                onChange={(e) => setNewType(e.target.value)}
-                className="px-4 py-2 border border-purple-800 rounded-r"
-                >
-                <option value="">Select Type</option>
-                <option value="PERIOD_CARE">Period Care</option>
-                <option value="FOOT_HEALTH">Foot Health</option>
-                <option value="SKIN_CARE">Skin Care</option>
-                </select>
-                <button
-                onClick={addProduct}
-                className="bg-purple-800 text-white rounded-md px-4 py-2 ml-2"
-                >
-                Add
-                </button>
-            </div>
             {isAddModalVisible && (
                 <div
                 className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
                 >
                     <div
-                        ref={modalRef}
                         className="bg-purple-800 text-white p-8 rounded-md"
                     >
                         <AddProduct onClose={handleCloseModal} onAddProduct={handleAddProduct} />
