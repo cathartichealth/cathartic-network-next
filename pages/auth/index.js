@@ -9,9 +9,6 @@ import awsExports from '../../src/aws-exports';
 import { listUsers } from '@/src/graphql/queries';
 Amplify.configure(awsExports);
 
-
-
-
 export default function UserAuth() {
   const checkEmailExsts = async(uemail) => {
     try{

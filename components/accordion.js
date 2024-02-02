@@ -8,11 +8,18 @@ const Accordion = ({ title, description }) => {
   };
 
   return (
-    <div className={`accordion ${isOpen ? 'open' : ''}`}>
-      <div className="accordion-title" onClick={toggleAccordion}>
+    <div className="rounded-md overflow-hidden border border-purple-800">
+      <div
+        className={`p-4 cursor-pointer bg-purple-800 text-white text-center`}
+        onClick={toggleAccordion}
+      >
         {title}
       </div>
-      {isOpen && <div className="accordion-description">{description}</div>}
+      {isOpen && (
+        <div className="bg-white text-black border-t border-purple-800 p-4 text-center">
+          {description}
+        </div>
+      )}
     </div>
   );
 };

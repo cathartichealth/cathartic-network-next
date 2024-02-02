@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {API, graphqlOperation} from 'aws-amplify';
 import {listProducts, getProduct} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
-import CardGrid from '@/components/CardGrid';
+import AddProduct from '../../components/addproduct';
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
@@ -16,6 +16,43 @@ const SupplierInterface = ({userId}) => {
     const [editedDescription, setEditedDescription] = useState('');
     const [editedQuantity, setEditedQuantity] = useState('');
     const [editedType, setEditedType] = useState(''); // State for "Edit Product" dropdown
+    const [isAddModalVisible, setAddModalVisible] = useState(false);
+
+    const modalRef = useRef();
+
+    const handleAddIconClick = () => {
+        console.log("hello help me I am NOT under the water")
+        setAddModalVisible(true);
+      };
+    
+    const handleCloseModal = () => {
+    console.log("hello help me I am under the water")
+    setAddModalVisible(false);
+    };
+
+    const handleAddProduct = (newProduct) => {
+    // Handle adding the new product (e.g., updating state, making API call)
+    console.log('Adding product:', newProduct);
+    // You may want to close the modal after adding the product
+    handleCloseModal();
+    };
+
+    const handleModalClick = (e) => {
+    console.log("handling modal click")
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+        handleCloseModal();
+        }      
+    };
+
+
+    useEffect(() => {
+        document.addEventListener('click', handleModalClick);
+
+        // Remove the event listener when the component unmounts
+        return () => {
+            document.removeEventListener('click', handleModalClick);
+        };
+    }, []);
 
 
     useEffect(() => {
@@ -163,106 +200,173 @@ const SupplierInterface = ({userId}) => {
             console.error('Mutation error:', error);
         }
     };
-
+    
 
     return (
         <div>
-            <h1>Product Table</h1>
-            <table>
+            <h1 className="text-purple-800 text-4xl text-center mb-8 pt-8">
+                Product Table
+            </h1>
+
+            <div className="overflow-x-auto">
+                <table className="w-full table-auto border border-purple-800 rounded-md">
+                <thead>
+                    <tr className="bg-purple-800 text-white text-left">
+                    <th className="p-2 text-left">Title</th>
+                    <th className="p-2 text-left">Description</th>
+                    <th className="p-2 text-left">Quantity</th>
+                    <th className="p-2 text-left">Type</th>
+                    <th className="p-2 text-left">Actions</th>
+                    <th className="p-2 text-left relative">
+                        <span
+                        className="absolute top-2 right-2 cursor-pointer"
+                        onClick={handleAddIconClick}
+                        >
+                            <i className="fas fa-plus text-white text-xl"></i>
+                        </span>
+                    </th>
+                    </tr>
+                </thead>
                 <tbody>
-                {products
+                    {products
                     .filter((product) => !product._deleted)
                     .map((product) => (
-                    <tr key={product.id}>
+                        <tr key={product.id} className="border-b border-purple-800">
                         {editedProductId === product.id ? (
                             // Edit mode
                             <>
-                                <td>
-                                    <input
-                                        type="text"
-                                        value={editedName}
-                                        onChange={(e) => setEditedName(e.target.value)}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        value={editedDescription}
-                                        onChange={(e) => setEditedDescription(e.target.value)}
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="number"
-                                        value={editedQuantity}
-                                        onChange={(e) => setEditedQuantity(e.target.value)}
-                                    />
-                                </td>
-                                <td>
-                                    <select
-                                        value={editedType}
-                                        onChange={(e) => setEditedType(e.target.value)}
-                                    >
-                                        <option value="">Select Type</option>
-                                        <option value="PERIOD_CARE">Period Care</option>
-                                        <option value="FOOT_HEALTH">Foot Health</option>
-                                        <option value="SKIN_CARE">Skin Care</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button onClick={() => saveEditedProduct(product)}>Save</button>
-                                    <button onClick={cancelEdit}>Cancel</button>
-                                </td>
+                            <td className="p-2">
+                                <input
+                                type="text"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
+                                className="w-full border border-purple-800 rounded-md p-2"
+                                />
+                            </td>
+                            <td className="p-2">
+                                <input
+                                type="text"
+                                value={editedDescription}
+                                onChange={(e) => setEditedDescription(e.target.value)}
+                                className="w-full border border-purple-800 rounded-md p-2"
+                                />
+                            </td>
+                            <td className="p-2">
+                                <input
+                                type="number"
+                                value={editedQuantity}
+                                onChange={(e) => setEditedQuantity(e.target.value)}
+                                className="w-full border border-purple-800 rounded-md p-2"
+                                />
+                            </td>
+                            <td className="p-2">
+                                <select
+                                value={editedType}
+                                onChange={(e) => setEditedType(e.target.value)}
+                                className="w-full border border-purple-800 rounded-md p-2"
+                                >
+                                <option value="">Select Type</option>
+                                <option value="PERIOD_CARE">Period Care</option>
+                                <option value="FOOT_HEALTH">Foot Health</option>
+                                <option value="SKIN_CARE">Skin Care</option>
+                                </select>
+                            </td>
+                            <td className="p-2">
+                                <button
+                                onClick={() => saveEditedProduct(product)}
+                                className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"
+                                >
+                                Save
+                                </button>
+                                <button
+                                onClick={cancelEdit}
+                                className="bg-purple-800 text-white rounded-md px-4 py-2"
+                                >
+                                Cancel
+                                </button>
+                            </td>
                             </>
                         ) : (
                             // View mode
                             <>
-                                <td>{product.name}</td>
-                                <td>{product.description}</td>
-                                <td>{product.quantity}</td>
-                                <td>{product.type}</td>
-                                <td>
-                                    <button onClick={() => editProduct(product)}>Edit</button>
-                                    <button onClick={() => deleteProductById(product)}>Delete</button>
-                                </td>
+                            <td className="p-2">{product.name}</td>
+                            <td className="p-2">{product.description}</td>
+                            <td className="p-2">{product.quantity}</td>
+                            <td className="p-2">{product.type}</td>
+                            <td className="p-2">
+                                <button
+                                onClick={() => editProduct(product)}
+                                className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"
+                                >
+                                Edit
+                                </button>
+                                <button
+                                onClick={() => deleteProductById(product)}
+                                className="bg-purple-800 text-white rounded-md px-4 py-2"
+                                >
+                                Delete
+                                </button>
+                            </td>
                             </>
                         )}
-                    </tr>
-                ))}
+                        </tr>
+                    ))}
                 </tbody>
-            </table>
+                </table>
+            </div>
 
-            <h2>Add Product</h2>
-            <div>
+            <h2 className="text-purple-800 text-2xl mt-4">Add Product</h2>
+            <div className="flex items-center mt-2">
                 <input
-                    type="text"
-                    placeholder="Name"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
+                type="text"
+                placeholder="Name"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="px-4 py-2 border border-purple-800 rounded-l"
                 />
                 <input
-                    type="text"
-                    placeholder="Description"
-                    value={newDescription}
-                    onChange={(e) => setNewDescription(e.target.value)}
+                type="text"
+                placeholder="Description"
+                value={newDescription}
+                onChange={(e) => setNewDescription(e.target.value)}
+                className="px-4 py-2 border border-purple-800"
                 />
                 <input
-                    type="number"
-                    placeholder="Quantity"
-                    value={newQuantity}
-                    onChange={(e) => setNewQuantity(e.target.value)}
+                type="number"
+                placeholder="Quantity"
+                value={newQuantity}
+                onChange={(e) => setNewQuantity(e.target.value)}
+                className="px-4 py-2 border border-purple-800"
                 />
                 <select
-                    value={newType}
-                    onChange={(e) => setNewType(e.target.value)}
+                value={newType}
+                onChange={(e) => setNewType(e.target.value)}
+                className="px-4 py-2 border border-purple-800 rounded-r"
                 >
-                    <option value="">Select Type</option>
-                    <option value="PERIOD_CARE">Period Care</option>
-                    <option value="FOOT_HEALTH">Foot Health</option>
-                    <option value="SKIN_CARE">Skin Care</option>
+                <option value="">Select Type</option>
+                <option value="PERIOD_CARE">Period Care</option>
+                <option value="FOOT_HEALTH">Foot Health</option>
+                <option value="SKIN_CARE">Skin Care</option>
                 </select>
-                <button onClick={addProduct}>Add</button>
+                <button
+                onClick={addProduct}
+                className="bg-purple-800 text-white rounded-md px-4 py-2 ml-2"
+                >
+                Add
+                </button>
             </div>
+            {isAddModalVisible && (
+                <div
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+                >
+                    <div
+                        ref={modalRef}
+                        className="bg-purple-800 text-white p-8 rounded-md"
+                    >
+                        <AddProduct onClose={handleCloseModal} onAddProduct={handleAddProduct} />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
