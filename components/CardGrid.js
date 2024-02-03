@@ -1,81 +1,45 @@
-import React from 'react';
-import { Grid, Card, Button, Flex, Heading, Image, Text, useTheme } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
+import { Card, Button, Flex, Heading, Image, Text } from '@aws-amplify/ui-react';
 
 const CardGrid = ({ items, buttonHandler }) => {
-    // Divide the items into rows with three cards each
-    const rows = [];
-    for (let i = 0; i < items.length; i += 3) {
-      const rowItems = items.slice(i, i + 3);
-      rows.push(rowItems);
-    }
-
-    const { tokens } = useTheme();
-  
     return (
-      <Flex
-        marginTop="1rem"
-        gap="1rem"
-        direction="column"
-      >
-        {rows.map((row, rowIndex) => (
-          <Flex
-            key={rowIndex}
-            direction="row"
-
-          >
-            {row.map((product) => (
-                <Card 
-                    variation="elevated"
-                    style={{
-                        width: '33%',
-                        borderRadius: 400
-                    }}
-                    borderRadius={tokens.radii.large}
+        <div className="grid grid-cols-3 gap-1 md:grid-cols-2 lg:grid-cols-3">
+            {items.map((product) => (
+                <Card
+                    key={product.id} // Assuming each product has a unique ID
+                    className="mb-4 rounded-lg overflow-hidden border border-purple-800 "
                 >
-                    <Flex
-                        direction={{ base: 'column', large: 'row' }}
-                        alignItems="center"
-                    >
+                    <Flex className="flex-row items-center">
                         <Image
                             alt="Sample Product Image"
                             src="https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"
-                            width="25%"
-                            marginRight="5%"
-                            borderRadius={tokens.radii.large}
+                            className="w-1/3 h-40 object-cover object-center rounded-l-lg"
                         />
-                 
-                        <Flex direction="column" alignItems="flex-start">
-                            <Heading level={3} color="#301934">{product.name}</Heading>
-                            <Text>
+                        <div className="flex-grow p-4">
+                            <Heading level={3} className="text-purple-800 mb-2">{product.name}</Heading>
+                            <Text className="mb-2">
                                 {product.description}
                             </Text>
-                            <Flex direction="row" alignItems="flex-start">
+                            <Flex className="flex-row items-start mb-2">
+                                <Text className="mr-2">
+                                    Type: {product.type}
+                                </Text>
                                 <Text>
                                     Quantity: {product.quantity}
                                 </Text>
-                                {product.type && 
-                                    <Text>
-                                        Type: {product.type}
-                                    </Text>
-                                }
                             </Flex>
-                        
-                            <Button
-                                variation="primary"
-                                borderRadius={tokens.radii.medium}
+                            <button
+
+                                className="bg-purple-800 text-white font-bold rounded-md focus:bg-purple-800 p-2"
                                 onClick={() => buttonHandler(product)}
                             >
                                 Request
-                            </Button>
-                        </Flex>
+                            </button>
+                        </div>
                     </Flex>
                 </Card>
             ))}
-          </Flex>
-        ))}
-      </Flex>
+        </div>
     );
 };
-  
+
 export default CardGrid;
