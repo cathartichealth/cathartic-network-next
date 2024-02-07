@@ -60,8 +60,9 @@ export default function SignIn(){
                             // display some error on screen
                         }
                         else{
+                            console.log(foundUser)
                             console.log("navigating to profile page")
-                            router.push("/profile")
+                            // router.push("/profile")
                         }
                     }
                     else{
