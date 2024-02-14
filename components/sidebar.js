@@ -19,7 +19,7 @@ function Sidebar({signOut}) {
             try {
                 const user = await Auth.currentAuthenticatedUser();
                 setCurrentUser(user);
-                console.log(currentUser);
+                console.log(user)
                 setRole(user.attributes['custom:role']);
                 // setRole("SUPPLIER");
                 console.log(role);
