@@ -83,7 +83,6 @@ function RequestListByClientID() {
                         <p>Product Description: {products[request.productID]?.description}</p>
                         <p>Quantity: {request.quantity}</p>
                         <p>Created At: {request.createdAt}</p>
-                        <p>Client id: {dataID}</p>
                         <button onClick={() => handleDeny(request.id)}>Deny</button>
                         <button onClick={() => handleAccept(request.id)}>Accept</button>
                     </li>
