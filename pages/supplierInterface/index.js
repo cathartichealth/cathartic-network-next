@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {API, graphqlOperation} from 'aws-amplify';
-import {listProducts, getProduct} from '@/src/graphql/queries';
+import {listProducts} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
-import CardGrid from '@/components/CardGrid';
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
