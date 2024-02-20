@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {API, graphqlOperation} from 'aws-amplify';
-import {listProducts, getProduct} from '@/src/graphql/queries';
+import { useRouter } from 'next/navigation';
+import {API, Auth, graphqlOperation} from 'aws-amplify';
+import {listProducts, productsByUserID} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
 import AddProduct from '../../components/addproduct';
 
@@ -18,14 +19,40 @@ const SupplierInterface = ({userId}) => {
     const [editedType, setEditedType] = useState(''); // State for "Edit Product" dropdown
     const [isAddModalVisible, setAddModalVisible] = useState(false);
 
+    let userInfo;
+    const [dataID, setID] = useState('');
+    const [role, setRole] = useState('');
+    const router = useRouter();
+
+    useEffect(() => {
+        const handleUserInfo = async () => {
+            try {
+                userInfo = await Auth.currentUserInfo();
+                setID(userInfo.attributes['custom:dataID']);
+                setRole(userInfo.attributes['custom:role']);
+            } catch (error) {
+                console.log("Error fetching user info:", error);
+            }
+        };
+
+        handleUserInfo();
+    }, []);
+
+    useEffect(() => {
+        if(role === ''){
+            return;
+        }
+        if(role === 'CLIENT'){
+            router.push("/")
+        }
+    })
+
     const handleAddIconClick = () => {
-        console.log("hello help me I am NOT under the water")
         setAddModalVisible(true);
       };
     
     const handleCloseModal = () => {
-    console.log("hello help me I am under the water")
-    setAddModalVisible(false);
+        setAddModalVisible(false);
     };
 
     const handleAddProduct = (newProduct) => {
@@ -53,9 +80,17 @@ const SupplierInterface = ({userId}) => {
     useEffect(() => {
         async function fetchProducts() {
             try {
+                if (!dataID){
+                    return;
+                }
+                console.log("Attempting fetch!");
+                console.log(dataID)
                 const response = await API.graphql(
-                    graphqlOperation(listProducts, {filter: {userID: {eq: "1"}}}));
-
+                    graphqlOperation(listProducts, {
+                        filter: { userID: { eq: dataID } } // Assuming supplierID is available in your scope
+                    }
+                ));
+                      
                 console.log('GraphQL Response:', response);
                 const productData = response.data.listProducts.items;
                 if (productData) {
@@ -67,47 +102,9 @@ const SupplierInterface = ({userId}) => {
                 console.error('Error fetching products:', error);
             }
         }
-
+        console.log("Fetching products associated with user", dataID);
         fetchProducts();
-    }, [userId]);
-
-    const addProduct = async () => {
-        if (!newName || !newDescription || !newQuantity) {
-            alert('Please fill in all fields.');
-            return;
-        }
-
-        const newProduct = {
-            name: newName,
-            description: newDescription,
-            quantity: parseInt(newQuantity),
-            type: newType,
-            userID: 1, // Use the provided userId
-        };
-
-        try {
-            const response = await API.graphql({
-                query: createProduct,
-                variables: {
-                    input: newProduct,
-                },
-            });
-
-            if (response.data) {
-                const newProductData = response.data.createProduct;
-                console.log('Product created:', newProductData);
-                setProducts((prevProducts) => [...prevProducts, newProductData]);
-                // Clear the input fields
-                setNewName('');
-                setNewDescription('');
-                setNewQuantity('');
-            } else if (response.errors) {
-                console.error('Mutation errors:', response.errors);
-            }
-        } catch (error) {
-            console.error('Mutation error:', error);
-        }
-    };
+    }, [dataID, isAddModalVisible]);
 
     const editProduct = (product) => {
         // Populate the edit form with product data
@@ -125,7 +122,7 @@ const SupplierInterface = ({userId}) => {
             description: editedDescription,
             quantity: parseInt(editedQuantity),
             type: editedType,
-            userID: 1, // Use the provided userId
+            userID: dataID, // Use the provided userId
             _version: product._version
         };
 
@@ -198,7 +195,7 @@ const SupplierInterface = ({userId}) => {
     
 
     return (
-        <div>
+        <div className="w-full">
             <h1 className="text-purple-800 text-4xl text-center mb-8 pt-8">
                 Product Table
             </h1>
@@ -317,7 +314,7 @@ const SupplierInterface = ({userId}) => {
                     <div
                         className="bg-purple-800 text-white p-8 rounded-md"
                     >
-                        <AddProduct onClose={handleCloseModal} onAddProduct={handleAddProduct} />
+                        <AddProduct onClose={handleCloseModal} />
                     </div>
                 </div>
             )}

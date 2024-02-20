@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { API } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
 import { listProducts } from '../../src/graphql/queries';
 import { createRequest } from '../../src/graphql/mutations';
+import { useRouter } from 'next/navigation';
 import CardGrid from '../../components/CardGrid'
 import RequestProduct from '../../components/requestproduct';
 import '@aws-amplify/ui-react/styles.css';
@@ -13,6 +14,36 @@ function ProductList() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [requestedQuantity, setRequestedQuantity] = useState(1); // Default quantity is 1
     const [filterType, setFilterType] = useState(null); // Type filter
+
+    const [currentUser, setCurrentUser] = useState(null);
+    const [userID, setID] = useState('');
+    const [role, setRole] = useState('');
+    const router = useRouter();
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser();
+                setCurrentUser(user);
+                console.log(user)
+                setID(user.attributes['custom:dataID']);
+                console.log(userID);
+                setRole(user.attributes['custom:role'])
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        if(role === ''){
+            return;
+        }
+        if(role === 'SUPPLIER'){
+            router.push('/auth');
+        }
+    }, [role]);
 
     useEffect(() => {
         async function fetchProducts() {
@@ -42,36 +73,6 @@ function ProductList() {
     const handlePopupClose = () => {
         setIsPopupOpen(false);
         setRequestedQuantity(1); // Reset quantity when closing the popup
-    };
-
-    const handleRequestSubmit = async () => {
-        try {
-            // Create a request using the GraphQL mutation
-            const requestInput = {
-                input: {
-                    quantity: requestedQuantity,
-                    clientID: 1,
-                    productID: selectedProduct.id, // Use productID as provided by your schema
-                    supplierID: selectedProduct.userID, // Use userID as provided by your schema
-                },
-            };
-
-            const response = await API.graphql({
-                query: createRequest,
-                variables: requestInput,
-            });
-
-            console.log('Request created:', response.data.createRequest);
-
-
-        // Handle any additional logic or UI updates as needed
-        } catch (error) {
-            console.error('Error creating request:', error);
-        }
-
-        setIsPopupOpen(false);
-        setSelectedProduct(null);
-        handlePopupClose();
     };
 
     // Filter products by type
@@ -126,7 +127,7 @@ function ProductList() {
                 //         </button>
                 //     </div>
                 // </div>
-                <RequestProduct product={selectedProduct} onClose={handlePopupClose}></RequestProduct>
+                <RequestProduct product={selectedProduct} onClose={handlePopupClose} clientID={userID}></RequestProduct>
             )}
         </div>
     );

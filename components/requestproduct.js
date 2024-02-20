@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {API, graphqlOperation} from 'aws-amplify';
 import { createRequest } from '../src/graphql/mutations';
 
-const RequestProduct = ({ product, onClose }) => {
+const RequestProduct = ({ product, onClose, clientID }) => {
     const [requestedQuantity, setRequestedQuantity] = useState(); // Default quantity is 1
+
 
     const handleRequestSubmit = async () => {
         try {
@@ -20,7 +21,7 @@ const RequestProduct = ({ product, onClose }) => {
             const requestInput = {
                 input: {
                     quantity: requestedQuantity,
-                    clientID: 1,
+                    clientID: clientID,
                     productID: product.id, // Use productID as provided by your schema
                     supplierID: product.userID, // Use userID as provided by your schema
                 },

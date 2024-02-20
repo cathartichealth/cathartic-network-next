@@ -5,7 +5,7 @@ import { Amplify, Auth, API, graphqlOperation } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import { HomeIcon, ShoppingCartIcon } from '@heroicons/react/outline';
 
-function Sidebar({signOut}) {
+function Sidebar() {
     const [currentUser, setCurrentUser] = useState(null);
     const [role, setRole] = useState('');
     const router = useRouter();
@@ -21,7 +21,6 @@ function Sidebar({signOut}) {
                 setCurrentUser(user);
                 console.log(user)
                 setRole(user.attributes['custom:role']);
-                // setRole("SUPPLIER");
                 console.log(role);
             } catch (error) {
                 console.error('Error fetching user data:', error);

@@ -7,6 +7,8 @@ import Sidebar from '../../components/sidebar';
 
 import awsExports from '../../src/aws-exports';
 import { listUsers } from '@/src/graphql/queries';
+import ClientHome from './client-home';
+import SupplierHome from './supplier-home';
 Amplify.configure(awsExports);
 
 export default function UserAuth() {
@@ -147,6 +149,12 @@ export default function UserAuth() {
     }
   }
 
+  const handleSignout = async () => {
+    setCurrentUser(null);
+    setRole("");
+    await Auth.signOut();
+  }
+
   const formFields = {
     signUp: {
       'custom:first_name': {
@@ -207,21 +215,29 @@ export default function UserAuth() {
       services={services}
       components = {components}
     >
-      {({ signOut, user }) => (
+      {({ user }) => (
         <main>
           <div className="flex flex-row">
             <div>
-              <Sidebar signOutFunction={signOut}/>
+              <Sidebar/>
             </div>
-            <div className="m-5 mt-7 text-3xl">
-              <div className="text-purple-800 font-semi">
-                Profile Page
-              </div>
-              <div className="text-sm"> 
-                <div>
-                  Hello {user.attributes['custom:first_name']} {user.attributes['custom:last_name']}!
+            <div className="w-full flex flex-col">
+              <div className="m-5 mt-7 text-3xl">
+                <div className="text-purple-800 font-semi">
+                  Profile Page
                 </div>
-                <button onClick={signOut}>Sign out</button>
+                <div className="text-sm"> 
+                  <div>
+                    Hello {user.attributes['custom:first_name']} {user.attributes['custom:last_name']}!
+                  </div>
+                  { (user.attributes['custom:role'] === "CLIENT") && 
+                    <ClientHome/>
+                  }
+                  { (user.attributes['custom:role'] === "SUPPLIER") && 
+                    <SupplierHome/>
+                  }
+                  <button className="bg-purple-800 text-white py-2 px-4 rounded-full mt-4" onClick={handleSignout}>Sign out</button>
+                </div>
               </div>
             </div>
           </div>
