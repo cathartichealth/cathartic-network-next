@@ -198,7 +198,9 @@ const SupplierInterface = ({userId}) => {
     return (
         
         <div className="flex flex-row">
-            <Sidebar/>
+            <div className="sticky">
+                <Sidebar/>
+            </div>
             <div className="w-full mt-7">
                 <div className="text-purple-800 text-3xl font-semi px-4 py-2">
                     Your Products

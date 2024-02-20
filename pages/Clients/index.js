@@ -81,7 +81,9 @@ function ProductList() {
 
     return (
         <div className="flex flex-row">
-            <Sidebar/>
+            <div className="sticky">
+                <Sidebar/>
+            </div>
             <div className="product-container bg-white text-purple-800 text-center py-8 w-full">
                 <div className="flex flex-row px-4 py-2 justify-between">
                     <div className="text-purple-800 text-3xl font-semi">
@@ -116,10 +118,10 @@ function ProductList() {
                             <tbody>
                                 {filteredProducts.map((product, index) => (
                                     <tr key={product.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
-                                        <td className="p-2 border border-purple-800">{product?.name}</td>
-                                        <td className="p-2 border border-purple-800">{product?.description}</td>
-                                        <td className="p-2 border border-purple-800">{product?.quantity}</td>
-                                        <td className="p-2 border border-purple-800">
+                                        <td className="p-2 text-left border border-purple-800">{product?.name}</td>
+                                        <td className="p-2 text-left border border-purple-800">{product?.description}</td>
+                                        <td className="p-2 text-left border border-purple-800">{product?.quantity}</td>
+                                        <td className="p-2 text-left border border-purple-800">
                                             <button onClick={() => handleRequestClick(product)} className="bg-purple-800 text-white px-4 py-2 rounded">Request</button>
                                         </td>
                                     </tr>

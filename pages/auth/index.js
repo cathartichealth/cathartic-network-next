@@ -218,7 +218,7 @@ export default function UserAuth() {
       {({ user }) => (
         <main>
           <div className="flex flex-row">
-            <div>
+            <div className="sticky">
               <Sidebar/>
             </div>
             <div className="w-full flex flex-col">
