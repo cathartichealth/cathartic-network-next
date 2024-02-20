@@ -84,12 +84,12 @@ export default function ClientHome() {
                     </thead>
                     {requests && 
                         <tbody>
-                            {requests.map((request) => 
-                                <tr key={request.id}>
-                                    <td className="p-2"> {products[request.productID]?.name} </td>
-                                    <td className="p-2"> {products[request.productID]?.description} </td>
-                                    <td className="p-2"> {request.quantity} </td>
-                                    <td className="p-2"> {request.createdAt} </td>
+                            {requests.map((request, index) => 
+                                <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
+                                    <td className="p-2 border border-purple-800"> {products[request.productID]?.name} </td>
+                                    <td className="p-2 border border-purple-800"> {products[request.productID]?.description} </td>
+                                    <td className="p-2 border border-purple-800"> {request.quantity} </td>
+                                    <td className="p-2 border border-purple-800"> {request.createdAt} </td>
                                 </tr>
                             )}
                         </tbody>

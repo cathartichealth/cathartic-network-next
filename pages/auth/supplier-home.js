@@ -102,16 +102,16 @@ export default function SupplierHome() {
                     </thead>
                     {requests && clients && products && 
                         <tbody>
-                            {requests.map((request) => 
-                                <tr key={request.id}>
-                                    <td className="p-2"> { clients[request.clientID] ? 
+                            {requests.map((request, index) => 
+                                <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
+                                    <td className="p-2 border border-purple-800"> { clients[request.clientID] ? 
                                         clients[request.clientID].first_name + clients[request.clientID].last_name
                                         : "Loading..."
                                     } </td>
-                                    <td className="p-2"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
-                                    <td className="p-2"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
-                                    <td className="p-2"> {request.quantity} </td>
-                                    <td className="p-2"> {request.createdAt} </td>
+                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
+                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
+                                    <td className="p-2 border border-purple-800"> {request.quantity} </td>
+                                    <td className="p-2 border border-purple-800"> {request.createdAt} </td>
                                 </tr>
                             )}
                         </tbody>

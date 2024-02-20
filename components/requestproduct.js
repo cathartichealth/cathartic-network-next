@@ -5,7 +5,6 @@ import { createRequest } from '../src/graphql/mutations';
 const RequestProduct = ({ product, onClose, clientID }) => {
     const [requestedQuantity, setRequestedQuantity] = useState(); // Default quantity is 1
 
-
     const handleRequestSubmit = async () => {
         try {
             // Create a request using the GraphQL mutation
@@ -33,10 +32,13 @@ const RequestProduct = ({ product, onClose, clientID }) => {
             });
 
             console.log('Request created:', response.data.createRequest);
+            let respString = "Successfully created request for " + requestedQuantity + " of " + product.name;
+            alert(respString);
             onClose();
         // Handle any additional logic or UI updates as needed
         } catch (error) {
             console.error('Error creating request:', error);
+            alert("Error creating request. Please try again later.");
             onClose();
         }
     };
