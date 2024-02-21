@@ -32,7 +32,7 @@
         },
         "GraphQLAPIIdOutput": "4xvyqzi6fbhfhf5dnhkdeoyxfa",
         "GraphQLAPIEndpointOutput": "https://5f6fes6sjzecvdrltidnywl564.appsync-api.us-west-1.amazonaws.com/graphql",
-        "GraphQLAPIKeyOutput": "da2-vvlmrw5rq5f7jhx26jilsuqyx4"
+        "GraphQLAPIKeyOutput": "da2-w2vavkwyananbdudenas52iemu"
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync",

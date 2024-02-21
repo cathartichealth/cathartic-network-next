@@ -54,7 +54,7 @@ const SupplierInterface = ({userId}) => {
         async function fetchProducts() {
             try {
                 const response = await API.graphql(
-                    graphqlOperation(listProducts, {filter: {userID: {eq: "1"}}}));
+                    graphqlOperation(listProducts));
 
                 console.log('GraphQL Response:', response);
                 const productData = response.data.listProducts.items;
@@ -313,6 +313,7 @@ const SupplierInterface = ({userId}) => {
             {isAddModalVisible && (
                 <div
                 className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+                
                 >
                     <div
                         className="bg-purple-800 text-white p-8 rounded-md"

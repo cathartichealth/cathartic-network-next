@@ -177,6 +177,7 @@ export const listProducts = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        imageKey
       }
       nextToken
       startedAt
