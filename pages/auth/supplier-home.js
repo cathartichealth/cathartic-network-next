@@ -8,6 +8,7 @@ export default function SupplierHome() {
     const [requests, setRequests] = useState([]);
     const [products, setProducts] = useState({});
     const [clients, setClients] = useState({});
+    let date;
 
     useEffect(() => {
         const handleUserInfo = async () => {
@@ -42,6 +43,36 @@ export default function SupplierHome() {
 
                 // Fetch product data for each request
                 for (const request of requestItems) {
+                    date = new Date(request.createdAt);
+                    var hours = date.getHours();
+                    var minutes = date.getMinutes();
+                    var seconds = date.getSeconds();
+                    var month = date.getMonth() + 1; // Months are zero-based, so add 1
+                    var day = date.getDate();
+                    var year = date.getFullYear() % 100; // Get last two digits of the year
+
+
+                    var ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+                    // Format the components
+                    var formattedTime = [
+                        hours.toString().padStart(2, '0'),
+                        minutes.toString().padStart(2, '0'),
+                        seconds.toString().padStart(2, '0')
+                    ].join(':');
+
+                    var formattedDate = [
+                        month.toString().padStart(2, '0'),
+                        day.toString().padStart(2, '0'),
+                        year.toString().padStart(2, '0')
+                    ].join('/');
+
+                    // Concatenate time, AM/PM, and date
+                    var formattedDateTime = formattedTime + ' ' + ampm + ' ' + formattedDate;
+                    request.createdAt = formattedDateTime;
+
                     const productID = request.productID;
                     if (!products[productID]) {
                         const productResponse = await API.graphql(
@@ -72,9 +103,6 @@ export default function SupplierHome() {
                         }));
                     }
                 }
-                console.log(requests);
-                console.log(products);
-                console.log(clients);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -110,8 +138,8 @@ export default function SupplierHome() {
                                     } </td>
                                     <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
                                     <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {request.quantity} </td>
-                                    <td className="p-2 border border-purple-800"> {request.createdAt} </td>
+                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
+                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
                                 </tr>
                             )}
                         </tbody>
