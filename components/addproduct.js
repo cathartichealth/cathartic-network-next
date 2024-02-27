@@ -1,30 +1,56 @@
 import React, {useState, useEffect} from 'react';
-import {API, graphqlOperation} from 'aws-amplify';
-import {listProducts, getProduct} from '@/src/graphql/queries';
-import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
+import { API, Auth } from 'aws-amplify';
+import { ProgramEnum } from '@/src/models';
+import {createProduct} from '@/src/graphql/mutations';
 
-
-
-
-
-const AddProduct = ({ onClose, onAddProduct }) => {
+const AddProduct = ({ onClose }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
     const [quantity, setQuantity] = useState('');
-  
+    
+    let userInfo;
+    const [dataID, setID] = useState('');
+    const [role, setRole] = useState('');
+
+    useEffect(() => {
+        const handleUserInfo = async () => {
+            try {
+                userInfo = await Auth.currentUserInfo();
+                setID(userInfo.attributes['custom:dataID']);
+                setRole(userInfo.attributes['custom:role']);
+            } catch (error) {
+                console.log("Error fetching user info:", error);
+            }
+        };
+
+        handleUserInfo();
+    }, []);
+
     const handleAddProduct = async () => {
       if (!name || !description || !quantity || !type) {
           alert('Please fill in all fields.');
           return;
+      }
+
+      let enumType;
+      console.log(type);
+      if(type === "Skin Care"){
+        enumType = ProgramEnum.SKIN_CARE
+      }
+      else if(type === "Foot Health"){
+        enumType = ProgramEnum.FOOT_HEALTH
+      }
+      else if (type === "Period Care"){
+        enumType = ProgramEnum.PERIOD_CARE
       }
     
       const newProduct = {
           name: name,
           description: description,
           quantity: parseInt(quantity),
-          type: type,
-          userID: 1, // Use the provided userId
+          type: enumType,
+          userID: dataID, // Use the provided userId
       };
     
       try {
@@ -38,11 +64,10 @@ const AddProduct = ({ onClose, onAddProduct }) => {
           if (response.data) {
               const newProductData = response.data.createProduct;
               console.log('Product created:', newProductData);
-              setProducts((prevProducts) => [...prevProducts, newProductData]);
               // Clear the input fields
-              setNewName('');
-              setNewDescription('');
-              setNewQuantity('');
+              setName('');
+              setDescription('');
+              setQuantity('');
               onClose();
           } else if (response.errors) {
               console.error('Mutation errors:', response.errors);

@@ -1,8 +1,10 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {API, graphqlOperation} from 'aws-amplify';
-import {listProducts} from '@/src/graphql/queries';
+import { useRouter } from 'next/navigation';
+import {API, Auth, graphqlOperation} from 'aws-amplify';
+import {listProducts, productsByUserID} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
 import AddProduct from '../../components/addproduct';
+import Sidebar from '@/components/sidebar';
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
@@ -18,14 +20,40 @@ const SupplierInterface = ({userId}) => {
     const [editedType, setEditedType] = useState(''); // State for "Edit Product" dropdown
     const [isAddModalVisible, setAddModalVisible] = useState(false);
 
+    let userInfo;
+    const [dataID, setID] = useState('');
+    const [role, setRole] = useState('');
+    const router = useRouter();
+
+    useEffect(() => {
+        const handleUserInfo = async () => {
+            try {
+                userInfo = await Auth.currentUserInfo();
+                setID(userInfo.attributes['custom:dataID']);
+                setRole(userInfo.attributes['custom:role']);
+            } catch (error) {
+                console.log("Error fetching user info:", error);
+            }
+        };
+
+        handleUserInfo();
+    }, []);
+
+    useEffect(() => {
+        if(role === ''){
+            return;
+        }
+        if(role === 'CLIENT'){
+            router.push("/")
+        }
+    })
+
     const handleAddIconClick = () => {
-        console.log("hello help me I am NOT under the water")
         setAddModalVisible(true);
       };
     
     const handleCloseModal = () => {
-    console.log("hello help me I am under the water")
-    setAddModalVisible(false);
+        setAddModalVisible(false);
     };
 
     const handleAddProduct = (newProduct) => {
@@ -53,9 +81,17 @@ const SupplierInterface = ({userId}) => {
     useEffect(() => {
         async function fetchProducts() {
             try {
+                if (!dataID){
+                    return;
+                }
+                console.log("Attempting fetch!");
+                console.log(dataID)
                 const response = await API.graphql(
-                    graphqlOperation(listProducts, {filter: {userID: {eq: "1"}}}));
-
+                    graphqlOperation(listProducts, {
+                        filter: { userID: { eq: dataID } } // Assuming supplierID is available in your scope
+                    }
+                ));
+                      
                 console.log('GraphQL Response:', response);
                 const productData = response.data.listProducts.items;
                 if (productData) {
@@ -67,47 +103,9 @@ const SupplierInterface = ({userId}) => {
                 console.error('Error fetching products:', error);
             }
         }
-
+        console.log("Fetching products associated with user", dataID);
         fetchProducts();
-    }, [userId]);
-
-    const addProduct = async () => {
-        if (!newName || !newDescription || !newQuantity) {
-            alert('Please fill in all fields.');
-            return;
-        }
-
-        const newProduct = {
-            name: newName,
-            description: newDescription,
-            quantity: parseInt(newQuantity),
-            type: newType,
-            userID: 1, // Use the provided userId
-        };
-
-        try {
-            const response = await API.graphql({
-                query: createProduct,
-                variables: {
-                    input: newProduct,
-                },
-            });
-
-            if (response.data) {
-                const newProductData = response.data.createProduct;
-                console.log('Product created:', newProductData);
-                setProducts((prevProducts) => [...prevProducts, newProductData]);
-                // Clear the input fields
-                setNewName('');
-                setNewDescription('');
-                setNewQuantity('');
-            } else if (response.errors) {
-                console.error('Mutation errors:', response.errors);
-            }
-        } catch (error) {
-            console.error('Mutation error:', error);
-        }
-    };
+    }, [dataID, isAddModalVisible]);
 
     const editProduct = (product) => {
         // Populate the edit form with product data
@@ -125,7 +123,7 @@ const SupplierInterface = ({userId}) => {
             description: editedDescription,
             quantity: parseInt(editedQuantity),
             type: editedType,
-            userID: 1, // Use the provided userId
+            userID: dataID, // Use the provided userId
             _version: product._version
         };
 
@@ -198,129 +196,135 @@ const SupplierInterface = ({userId}) => {
     
 
     return (
-        <div>
-            <h1 className="text-purple-800 text-4xl text-center mb-8 pt-8">
-                Product Table
-            </h1>
-
-            <div className="overflow-x-auto">
-                <table className="w-full table-auto border border-purple-800 rounded-md">
-                <thead>
-                    <tr className="bg-purple-800 text-white text-left">
-                    <th className="p-2 text-left">Title</th>
-                    <th className="p-2 text-left">Description</th>
-                    <th className="p-2 text-left">Quantity</th>
-                    <th className="p-2 text-left">Type</th>
-                    <th className="p-2 text-left">Actions</th>
-                    <th className="p-2 text-left relative">
-                        <span
-                        className="absolute top-2 right-2 cursor-pointer"
-                        onClick={handleAddIconClick}
-                        >
-                            <i className="fas fa-plus text-white text-xl"></i>
-                        </span>
-                    </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {products
-                    .filter((product) => !product._deleted)
-                    .map((product) => (
-                        <tr key={product.id} className="border-b border-purple-800">
-                        {editedProductId === product.id ? (
-                            // Edit mode
-                            <>
-                            <td className="p-2">
-                                <input
-                                type="text"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                                className="w-full border border-purple-800 rounded-md p-2"
-                                />
-                            </td>
-                            <td className="p-2">
-                                <input
-                                type="text"
-                                value={editedDescription}
-                                onChange={(e) => setEditedDescription(e.target.value)}
-                                className="w-full border border-purple-800 rounded-md p-2"
-                                />
-                            </td>
-                            <td className="p-2">
-                                <input
-                                type="number"
-                                value={editedQuantity}
-                                onChange={(e) => setEditedQuantity(e.target.value)}
-                                className="w-full border border-purple-800 rounded-md p-2"
-                                />
-                            </td>
-                            <td className="p-2">
-                                <select
-                                value={editedType}
-                                onChange={(e) => setEditedType(e.target.value)}
-                                className="w-full border border-purple-800 rounded-md p-2"
-                                >
-                                <option value="">Select Type</option>
-                                <option value="PERIOD_CARE">Period Care</option>
-                                <option value="FOOT_HEALTH">Foot Health</option>
-                                <option value="SKIN_CARE">Skin Care</option>
-                                </select>
-                            </td>
-                            <td className="p-2">
-                                <button
-                                onClick={() => saveEditedProduct(product)}
-                                className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"
-                                >
-                                Save
-                                </button>
-                                <button
-                                onClick={cancelEdit}
-                                className="bg-purple-800 text-white rounded-md px-4 py-2"
-                                >
-                                Cancel
-                                </button>
-                            </td>
-                            </>
-                        ) : (
-                            // View mode
-                            <>
-                            <td className="p-2">{product.name}</td>
-                            <td className="p-2">{product.description}</td>
-                            <td className="p-2">{product.quantity}</td>
-                            <td className="p-2">{product.type}</td>
-                            <td className="p-2">
-                                <button
-                                onClick={() => editProduct(product)}
-                                className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"
-                                >
-                                Edit
-                                </button>
-                                <button
-                                onClick={() => deleteProductById(product)}
-                                className="bg-purple-800 text-white rounded-md px-4 py-2"
-                                >
-                                Delete
-                                </button>
-                            </td>
-                            </>
-                        )}
-                        </tr>
-                    ))}
-                </tbody>
-                </table>
+        
+        <div className="flex flex-row">
+            <div className="sticky">
+                <Sidebar/>
             </div>
-
-            {isAddModalVisible && (
-                <div
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-                >
-                    <div
-                        className="bg-purple-800 text-white p-8 rounded-md"
-                    >
-                        <AddProduct onClose={handleCloseModal} onAddProduct={handleAddProduct} />
-                    </div>
+            <div className="w-full mt-7">
+                <div className="text-purple-800 text-3xl font-semi px-4 py-2">
+                    Your Products
                 </div>
-            )}
+
+                <div className="overflow-x-auto px-4">
+                    <table className="w-full table-auto border border-purple-800">
+                        <thead>
+                            <tr className="bg-purple-800 text-white text-left">
+                                <th className="p-2 text-left">Title</th>
+                                <th className="p-2 text-left">Description</th>
+                                <th className="p-2 text-left">Quantity</th>
+                                <th className="p-2 text-left">Type</th>
+                                <th className="p-2 text-left flex justify-between items-center">
+                                    <span>Actions</span>
+                                    <span
+                                        className="cursor-pointer"
+                                        onClick={handleAddIconClick}
+                                    >
+                                        <i className="fas fa-plus text-white text-xl"></i>
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products
+                            .filter((product) => !product._deleted)
+                            .map((product, index) => (
+                                <tr key={product.id} className={ index % 2 === 0 ? 'bg-white border-b border-purple-800' : 'bg-purple-100 border-b border-purple-800'}>
+                                {editedProductId === product.id ? (
+                                    // Edit mode
+                                    <>
+                                    <td className="p-2">
+                                        <input
+                                        type="text"
+                                        value={editedName}
+                                        onChange={(e) => setEditedName(e.target.value)}
+                                        className="w-full border border-purple-800 rounded-md p-2"
+                                        />
+                                    </td>
+                                    <td className="p-2">
+                                        <input
+                                        type="text"
+                                        value={editedDescription}
+                                        onChange={(e) => setEditedDescription(e.target.value)}
+                                        className="w-full border border-purple-800 rounded-md p-2"
+                                        />
+                                    </td>
+                                    <td className="p-2">
+                                        <input
+                                        type="number"
+                                        value={editedQuantity}
+                                        onChange={(e) => setEditedQuantity(e.target.value)}
+                                        className="w-full border border-purple-800 rounded-md p-2"
+                                        />
+                                    </td>
+                                    <td className="p-2">
+                                        <select
+                                        value={editedType}
+                                        onChange={(e) => setEditedType(e.target.value)}
+                                        className="w-full border border-purple-800 rounded-md p-2"
+                                        >
+                                        <option value="">Select Type</option>
+                                        <option value="PERIOD_CARE">Period Care</option>
+                                        <option value="FOOT_HEALTH">Foot Health</option>
+                                        <option value="SKIN_CARE">Skin Care</option>
+                                        </select>
+                                    </td>
+                                    <td className="p-2">
+                                        <button
+                                        onClick={() => saveEditedProduct(product)}
+                                        className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"
+                                        >
+                                        Save
+                                        </button>
+                                        <button
+                                        onClick={cancelEdit}
+                                        className="bg-purple-800 text-white rounded-md px-4 py-2"
+                                        >
+                                        Cancel
+                                        </button>
+                                    </td>
+                                    </>
+                                ) : (
+                                    // View mode
+                                    <>
+                                    <td className="p-2">{product.name}</td>
+                                    <td className="p-2">{product.description}</td>
+                                    <td className="p-2">{product.quantity}</td>
+                                    <td className="p-2">{product.type}</td>
+                                    <td className="p-2">
+                                        <button
+                                            onClick={() => editProduct(product)}
+                                            className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => deleteProductById(product)}
+                                            className="bg-purple-800 text-white rounded-md px-4 py-2"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                    </>
+                                )}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {isAddModalVisible && (
+                    <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+                    >
+                        <div
+                            className="bg-purple-800 text-white p-8 rounded-md"
+                        >
+                            <AddProduct onClose={handleCloseModal} />
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

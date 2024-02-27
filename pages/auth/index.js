@@ -2,14 +2,33 @@ import { Amplify, Auth, API, graphqlOperation } from 'aws-amplify';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { createUser } from '../../src/graphql/mutations'
 import { CheckboxField, TextField, useTheme, View, Image } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Sidebar from '../../components/sidebar';
 
 import awsExports from '../../src/aws-exports';
 import { listUsers } from '@/src/graphql/queries';
+import ClientHome from './client-home';
+import SupplierHome from './supplier-home';
 Amplify.configure(awsExports);
 
 export default function UserAuth() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [role, setRole] = useState('');
+  useEffect(() => {
+    const fetchUserData = async () => {
+        try {
+            const user = await Auth.currentAuthenticatedUser();
+            setCurrentUser(user);
+            console.log(currentUser);
+            setRole(user.attributes['custom:role']);
+            console.log(role);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    fetchUserData();
+  }, []);
+
   const checkEmailExsts = async(uemail) => {
     try{
       const response = await API.graphql(graphqlOperation(listUsers, { filter: { email: { eq: uemail } , _deleted : {ne: true}} }));
@@ -27,7 +46,6 @@ export default function UserAuth() {
   }
 
   const createDBUser = async (formData) => {
-
     let { username, attributes } = formData;
     console.log("first")
     console.log(formData)
@@ -72,10 +90,9 @@ export default function UserAuth() {
   }
   const components = {
     Header() {
-      const { tokens } = useTheme();
   
       return (
-        <View textAlign="center" padding={tokens.space.medium}>
+        <View textAlign="center">
           <Image
             alt="cathartic logo"
             src="https://www.cathartichealth.org/wp-content/uploads/2022/10/picsvg_download.svg"
@@ -130,6 +147,12 @@ export default function UserAuth() {
         }
       })
     }
+  }
+
+  const handleSignout = async () => {
+    setCurrentUser(null);
+    setRole("");
+    await Auth.signOut();
   }
 
   const formFields = {
@@ -192,11 +215,32 @@ export default function UserAuth() {
       services={services}
       components = {components}
     >
-    
-      {({ signOut, user }) => (
+      {({ user }) => (
         <main>
-          <h1>Hello {user.username}</h1>
-          <button onClick={signOut}>Sign out</button>
+          <div className="flex flex-row">
+            <div className="sticky">
+              <Sidebar/>
+            </div>
+            <div className="w-full flex flex-col">
+              <div className="m-5 mt-7 text-3xl">
+                <div className="text-purple-800 font-semi">
+                  Profile Page
+                </div>
+                <div className="text-sm"> 
+                  <div>
+                    Hello {user.attributes['custom:first_name']} {user.attributes['custom:last_name']}!
+                  </div>
+                  { (user.attributes['custom:role'] === "CLIENT") && 
+                    <ClientHome/>
+                  }
+                  { (user.attributes['custom:role'] === "SUPPLIER") && 
+                    <SupplierHome/>
+                  }
+                  <button className="bg-purple-800 text-white py-2 px-4 rounded-full mt-4" onClick={handleSignout}>Sign out</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
       )}
     </Authenticator>
