@@ -1,22 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { requestsByClientID, getProduct } from '@/src/graphql/queries'; // Import your GraphQL queries
 
 function RequestListByClientID() {
     const [requests, setRequests] = useState([]);
     const [products, setProducts] = useState({});
-    const clientID = "c32a4427-fa50-4c9e-b230-883ddd117eef"; // Replace with your client ID
+    let userInfo = null;
+    const [dataID, setID] = useState('');
 
     useEffect(() => {
+        const handleUserInfo = async () => {
+            try {
+                userInfo = await Auth.currentUserInfo();
+                setID(userInfo.attributes['custom:dataID']);
+            } catch (error) {
+                console.log("Error fetching user info:", error);
+            }
+        };
+
+        handleUserInfo();
+
+    }, []);
+
+    useEffect(() => {
+        const clientID = dataID;
+        if(clientID === ''){
+            return;
+        }
+
         async function fetchRequests() {
             try {
                 const response = await API.graphql(
                     graphqlOperation(requestsByClientID, {
                         clientID,
-                        // You can add any additional filtering, sorting, and limiting parameters here
                     })
                 );
                 const requestItems = response.data.requestsByClientID.items;
+                console.log(requestItems)
                 setRequests(requestItems);
 
                 // Fetch product data for each request
@@ -41,7 +61,17 @@ function RequestListByClientID() {
         }
 
         fetchRequests();
-    }, [clientID]);
+    }, [dataID])
+
+    const handleDeny = (requestID) => {
+        // Implement deny logic here
+        console.log(`Deny request with ID: ${requestID}`);
+    };
+
+    const handleAccept = (requestID) => {
+        // Implement accept logic here
+        console.log(`Accept request with ID: ${requestID}`);
+    };
 
     return (
         <div>
@@ -53,7 +83,8 @@ function RequestListByClientID() {
                         <p>Product Description: {products[request.productID]?.description}</p>
                         <p>Quantity: {request.quantity}</p>
                         <p>Created At: {request.createdAt}</p>
-                        {/* Add other fields you want to display */}
+                        <button onClick={() => handleDeny(request.id)}>Deny</button>
+                        <button onClick={() => handleAccept(request.id)}>Accept</button>
                     </li>
                 ))}
             </ul>
