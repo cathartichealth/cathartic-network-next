@@ -1,40 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import { API, graphqlOperation } from 'aws-amplify';
-import { listProducts, getProduct } from '@/src/graphql/queries';
-import { createProduct, updateProduct, deleteProduct } from '@/src/graphql/mutations';
-import { Storage } from 'aws-amplify';
-import { Auth } from 'aws-amplify';
-import { UNSAFE_useRouteId } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { API, Auth } from 'aws-amplify';
+import { ProgramEnum } from '@/src/models';
+import {createProduct} from '@/src/graphql/mutations';
 
+const AddProduct = ({ onClose }) => {
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [type, setType] = useState('');
+    const [quantity, setQuantity] = useState('');
+    
+    let userInfo;
+    const [dataID, setID] = useState('');
+    const [role, setRole] = useState('');
 
+    useEffect(() => {
+        const handleUserInfo = async () => {
+            try {
+                userInfo = await Auth.currentUserInfo();
+                setID(userInfo.attributes['custom:dataID']);
+                setRole(userInfo.attributes['custom:role']);
+            } catch (error) {
+                console.log("Error fetching user info:", error);
+            }
+        };
 
+        handleUserInfo();
+    }, []);
 
+    const handleAddProduct = async () => {
+      if (!name || !description || !quantity || !type) {
+          alert('Please fill in all fields.');
+          return;
+      }
 
-const AddProduct = ({ onClose, onAddProduct }) => {
+      let imageKey = '';
+      if (image) {
+        const result = await Storage.put(image.name, image, {
+          contentType: image.type,
+        });
+        imageKey = result.key;
+        console.log(imageKey)
+      }
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [type, setType] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [image, setImage] = useState(null);
-  const [userID, setUserID] = useState(null)
-  
-  useEffect(() => {
-    const fetchUserData = async () => {
+      let enumType;
+      console.log(type);
+      if(type === "Skin Care"){
+        enumType = ProgramEnum.SKIN_CARE
+      }
+      else if(type === "Foot Health"){
+        enumType = ProgramEnum.FOOT_HEALTH
+      }
+      else if (type === "Period Care"){
+        enumType = ProgramEnum.PERIOD_CARE
+      }
+    
+      const newProduct = {
+        name: name,
+        description: description,
+        quantity: parseInt(quantity),
+        type: type,
+        userID: dataID,
+        imageKey: imageKey,
+        _deleted: false
+      };
+    
       try {
-
-        const user = await Auth.currentAuthenticatedUser();
-        console.log("useffect")
-
-        const dataID = user.attributes['custom:dataID'];
-        setUserID(dataID);
+          const response = await API.graphql({
+              query: createProduct,
+              variables: {
+                  input: newProduct,
+              },
+          });
+    
+          if (response.data) {
+              const newProductData = response.data.createProduct;
+              console.log('Product created:', newProductData);
+              // Clear the input fields
+              setName('');
+              setDescription('');
+              setQuantity('');
+              onClose();
+          } else if (response.errors) {
+              console.error('Mutation errors:', response.errors);
+          }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
-
-    fetchUserData();
-  }, []);
 
 
   
@@ -47,64 +99,6 @@ const AddProduct = ({ onClose, onAddProduct }) => {
     const file = e.target.files[0];
     setImage(file);
   }
-
-  const handleAddProduct = async () => {
-    if (!name || !description || !quantity || !type) {
-      alert('Please fill in all fields.');
-      return;
-    }
-
-    
-
-    try {
-      let imageKey = '';
-      if (image) {
-        const result = await Storage.put(image.name, image, {
-          contentType: image.type,
-        });
-        imageKey = result.key;
-        console.log(imageKey)
-      }
-      const newProduct = {
-        name: name,
-        description: description,
-        quantity: parseInt(quantity),
-        type: type,
-        userID,
-        imageKey: imageKey,
-        _deleted: false
-      };
-
-      console.log(newProduct)
-
-      const response = await API.graphql({
-        query: createProduct,
-        variables: {
-          input: newProduct,
-        },
-      });
-
-      
-      
-
-      if (response.data) {
-
-        const newProductData = response.data.createProduct;
-        console.log('Product created:', newProductData);
-        setProducts((prevProducts) => [...prevProducts, newProductData]);
-        // Clear the input fields
-        setNewName('');
-        setNewDescription('');
-        setNewQuantity('');
-        onClose();
-        setImage(null)
-      } else if (response.errors) {
-        console.error('Mutation errors:', response.errors);
-      }
-    } catch (error) {
-      console.error('Mutation error:', error);
-    }
-  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Accordion from '../components/accordion';
 
-
 const handlePress = () => {
   const router = useRouter();
   router.push('/auth');
