@@ -33,6 +33,15 @@ const AddProduct = ({ onClose }) => {
           return;
       }
 
+      let imageKey = '';
+      if (image) {
+        const result = await Storage.put(image.name, image, {
+          contentType: image.type,
+        });
+        imageKey = result.key;
+        console.log(imageKey)
+      }
+
       let enumType;
       console.log(type);
       if(type === "Skin Care"){
@@ -46,11 +55,13 @@ const AddProduct = ({ onClose }) => {
       }
     
       const newProduct = {
-          name: name,
-          description: description,
-          quantity: parseInt(quantity),
-          type: enumType,
-          userID: dataID, // Use the provided userId
+        name: name,
+        description: description,
+        quantity: parseInt(quantity),
+        type: type,
+        userID: dataID,
+        imageKey: imageKey,
+        _deleted: false
       };
     
       try {
@@ -73,75 +84,95 @@ const AddProduct = ({ onClose }) => {
               console.error('Mutation errors:', response.errors);
           }
       } catch (error) {
-          console.error('Mutation error:', error);
+        console.error('Error fetching user data:', error);
       }
     };
-  
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-purple-800 text-white p-8 rounded-md">
-          <button
-              onClick={onClose}
-              className="absolute top-2 right-2 text-white cursor-pointer"
-          >
-            X
-          </button>
-          <h2 className="text-2xl font-bold mb-4">Add Product</h2>
 
-          <div className="mb-4">
-            <label className="block">Name:</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border border-white rounded text-black"
-            />
-          </div>
-  
-          <div className="mb-4">
-            <label className="block">Description:</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2 border border-white rounded text-black"
-            />
-          </div>
-  
-          <div className="mb-4">
-              <label className="block">Type:</label>
-              <select
-                  name="type"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="w-full p-2 border border-white rounded text-black"
-              >
-                  <option value="" disabled>Select a type</option>
-                  <option value="Period Care">Period Care</option>
-                  <option value="Foot Health">Foot Health</option>
-                  <option value="Skin Care">Skin Care</option>
-              </select>
-          </div>
 
-          <div className="mb-4">
-            <label className="block">Quantity:</label>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="w-full p-2 border border-white rounded text-black"
-            />
-          </div>
   
-          <button
-            onClick={handleAddProduct}
-            className="bg-white text-purple-800 px-4 py-2 rounded text-black"
-          >
-            Add Product
-          </button>
+
+  
+
+
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+  }
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-purple-600 text-white p-8 rounded-md">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-white cursor-pointer"
+        >
+          X
+        </button>
+        <h2 className="text-2xl font-bold mb-4">Add Product</h2>
+
+        <div className="mb-4">
+          <label className="block">Name:</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-2 border border-white rounded text-black"
+          />
         </div>
+
+        <div className="mb-4">
+          <label className="block">Description:</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-2 border border-white rounded text-black"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block">Type:</label>
+          <select
+            name="type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full p-2 border border-white rounded text-black"
+          >
+            <option value="" disabled>Select a type</option>
+            <option value="PERIOD_CARE">Period Care</option>
+            <option value="FOOT_HEALTH">Foot Health</option>
+            <option value="SKIN_CARE">Skin Care</option>
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block">Quantity:</label>
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            className="w-full p-2 border border-white rounded text-black"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block">Image:</label>
+          <input
+            type="file" accept = "image/*"
+            onChange={handleImageChange}
+            className="w-full p-2 border border-white rounded text-black"
+          />
+        </div>
+
+        <button
+          onClick={handleAddProduct}
+          className="bg-white text-purple-400 px-4 py-2 rounded text-black"
+        >
+          Add Product
+        </button>
       </div>
-    );
-  };
-  
-  export default AddProduct;
-  
+    </div>
+  );
+};
+
+export default AddProduct;

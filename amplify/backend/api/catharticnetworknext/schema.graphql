@@ -21,6 +21,7 @@ type Product @model @auth(rules: [{allow: public}]) {
   unit: String
   userID: ID! @index(name: "byUser")
   Requests: [Request] @hasMany(indexName: "byProduct", fields: ["id"])
+  imageKey: String
 }
 
 enum RoleEnum {

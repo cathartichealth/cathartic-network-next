@@ -62,6 +62,7 @@ type EagerProduct = {
   readonly unit?: string | null;
   readonly userID: string;
   readonly Requests?: (Request | null)[] | null;
+  readonly imageKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -79,6 +80,7 @@ type LazyProduct = {
   readonly unit?: string | null;
   readonly userID: string;
   readonly Requests: AsyncCollection<Request>;
+  readonly imageKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

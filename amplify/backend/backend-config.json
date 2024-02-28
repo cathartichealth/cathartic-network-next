@@ -11,8 +11,7 @@
           ],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDate": "2025-01-23T02:14:32.641Z",
-              "apiKeyExpirationDays": 365,
+              "apiKeyExpirationDays": 30,
               "description": "api key description"
             },
             "authenticationType": "API_KEY"
@@ -98,6 +97,11 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "sendEmailRequests": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -130,6 +134,22 @@
         {
           "category": "function",
           "resourceName": "dynappPreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_sendEmailRequests_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "sendEmailRequests"
+        }
+      ]
+    },
+    "AMPLIFY_function_sendEmailRequests_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "sendEmailRequests"
         }
       ]
     }

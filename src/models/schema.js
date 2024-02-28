@@ -168,6 +168,13 @@ export const schema = {
                         ]
                     }
                 },
+                "imageKey": {
+                    "name": "imageKey",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -380,6 +387,6 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.4.0",
-    "version": "b5c5dc5d6f7173ddb0de8cd675ff8eb5"
+    "codegenVersion": "3.4.4",
+    "version": "36ae72acaaeda32da3e96d625a1c3baa"
 };
