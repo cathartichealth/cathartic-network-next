@@ -56,6 +56,21 @@ function Sidebar() {
                     
                 </button>
             )}
+           {role === "CLIENT" && (
+    <button 
+        className="mt-2 py-1 px-1 mx-2 w-5/6 bg-purple-800 text-left text-white hover:bg-white hover:text-purple-600 rounded-lg hover:shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 text-left flex items-center justify-between"
+        onClick={() => {
+            router.push('/Wishlist');
+        }}
+    >
+        <span>Wishlist</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+    <path d="M12 2l2.99 6.375L22 9.25l-5.75 4.438L18.5 22 12 17.5 5.5 22l1.25-8.812L2 9.25l7.01-.875z"/>
+</svg>
+
+    </button>
+)}
+
             {role === "SUPPLIER" && (
                 <button 
                     className="mt-2 py-1 px-1 mx-2 w-5/6 bg-purple-800 text-left text-white hover:bg-white hover:text-purple-600 rounded-lg hover:shadow-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 text-left flex items-center justify-between"
