@@ -29,6 +29,16 @@ export default function UserAuth() {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    // Disable vertical scrolling on the body element
+    document.body.style.overflowY = 'hidden';
+
+    // Re-enable scrolling on component unmount
+    return () => {
+        document.body.style.overflowY = 'auto';
+    };
+  }, []);
+
   const checkEmailExsts = async(uemail) => {
     try{
       const response = await API.graphql(graphqlOperation(listUsers, { filter: { email: { eq: uemail } , _deleted : {ne: true}} }));
@@ -217,11 +227,9 @@ export default function UserAuth() {
     >
       {({ user }) => (
         <main>
-          <div className="flex flex-row">
-            <div className="sticky">
-              <Sidebar/>
-            </div>
-            <div className="w-full flex flex-col">
+          <div className="flex flex-row h-screen">
+            <Sidebar/>
+            <div className="flex flex-col w-full overflow-auto">
               <div className="m-5 mt-7 text-3xl">
                 <div className="text-purple-800 font-semi">
                   Profile Page

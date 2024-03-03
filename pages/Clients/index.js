@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { API, Auth } from 'aws-amplify';
 import { listProducts } from '../../src/graphql/queries';
-import { createRequest } from '../../src/graphql/mutations';
 import { useRouter } from 'next/navigation';
-import CardGrid from '../../components/CardGrid'
 import RequestProduct from '../../components/requestproduct';
 import { Storage } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import Sidebar from '@/components/sidebar';
+import Image from 'next/image';
 
 
 function ProductList() {
@@ -39,6 +38,16 @@ function ProductList() {
     }, []);
 
     useEffect(() => {
+        // Disable vertical scrolling on the body element
+        document.body.style.overflowY = 'hidden';
+
+        // Re-enable scrolling on component unmount
+        return () => {
+            document.body.style.overflowY = 'auto';
+        };
+    }, []);
+
+    useEffect(() => {
         if(role === ''){
             return;
         }
@@ -65,7 +74,7 @@ function ProductList() {
                                 return { ...product, imagelink: imageUrl };
                             } catch (error) {
                                 console.error(`Error fetching image for product ${product.id}:`, error);
-                                return {...product, imageLink: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"};
+                                return {...product, imagelink: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"};
                                 
                                 
                             }
@@ -85,6 +94,13 @@ function ProductList() {
         fetchProducts();
     }, []);
 
+    useEffect(() => {
+        if(!products){
+            return;
+        }
+        console.log(products)
+    }, [products])
+
     const handleRequestClick = (product) => {
         console.log("hello there!")
         setSelectedProduct(product);
@@ -100,60 +116,79 @@ function ProductList() {
     const filteredProducts = filterType ? products.filter(product => product.type === filterType) : products;
 
     return (
-        <div className="flex flex-row">
-            <div className="sticky">
-                <Sidebar/>
-            </div>
-            <div className="product-container bg-white text-purple-800 text-center py-8 w-full">
-                <div className="flex flex-row px-4 py-2 justify-between">
-                    <div className="text-purple-800 text-3xl font-semi">
-                        Product List
+        <div className="flex flex-row h-screen">
+            
+            <Sidebar/>
+            <div className="flex flex-col w-full overflow-auto">
+                <div className="product-container bg-white text-purple-800 text-center py-8 w-full">
+                    <div className="flex flex-row px-4 py-2 justify-between">
+                        <div className="text-purple-800 text-3xl font-semi">
+                            Product List
+                        </div>
+
+                        <div className="mb-4 px-2">
+                            <label className="text-sm text-purple-800 px-1">Filter by Type:</label>
+                            <select
+                                className="bg-white text-purple-800 p-1 rounded border border-purple-800"
+                                onChange={(e) => setFilterType(e.target.value)}
+                            >
+                                <option value="">All</option>
+                                <option value="PERIOD_CARE">Period Care</option>
+                                <option value="FOOT_HEALTH">Foot Health</option>
+                                <option value="SKIN_CARE">Skin Care</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="mb-4 px-2">
-                        <label className="text-sm text-purple-800 px-1">Filter by Type:</label>
-                        <select
-                            className="bg-white text-purple-800 p-1 rounded border border-purple-800"
-                            onChange={(e) => setFilterType(e.target.value)}
-                        >
-                            <option value="">All</option>
-                            <option value="PERIOD_CARE">Period Care</option>
-                            <option value="FOOT_HEALTH">Foot Health</option>
-                            <option value="SKIN_CARE">Skin Care</option>
-                        </select>
+                    <div className="overflow-x-auto px-4 w-full">
+                        <table className="w-full table-auto border-collapse border border-purple-800 rounded-md">
+                            <thead>
+                                <tr className="bg-purple-800 text-white text-left">
+                                    <th className="p-2 text-left">Product Name</th>
+                                    <th className="p-2 text-left">Product Description</th>
+                                    <th className="p-2 text-left">Quantity</th>
+                                    <th className="p-2 text-left">Actions</th> {/* Added Actions column */}
+                                </tr>
+                            </thead>
+                            {products && 
+                                <tbody>
+                                    {filteredProducts.map((product, index) => (
+                                        <tr key={product.id} className={index % 2 === 0 ? 'bg-white border border-purple-800' : 'bg-purple-100 border border-purple-800'}>
+                                            <td className="p-2 text-left border border-purple-800 align-middle">
+                                                <div className="flex flex-col">
+                                                    <div>
+                                                        {product?.name}
+                                                    </div>
+                                                    <img
+                                                        src={product?.imagelink}
+                                                        className="w-[150px] h-[150px] align-top"
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="p-2 text-left border border-purple-800  align-top">
+                                                <div>
+                                                    {product?.description}
+                                                </div>
+                                            </td>
+                                            <td className="p-2 text-left border border-purple-800  align-top">
+                                                <div>
+                                                    {product?.quantity}
+                                                </div>
+                                            </td>
+                                            <td className="p-2 text-left border border-purple-800  align-top">
+                                                <button onClick={() => handleRequestClick(product)} className="bg-purple-800 text-white px-4 py-2 rounded">Request</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            }
+                        </table>
                     </div>
-                </div>
 
-                <div className="overflow-x-auto px-4 w-full">
-                    <table className="w-full table-auto border-collapse border border-purple-800 rounded-md">
-                        <thead>
-                            <tr className="bg-purple-800 text-white text-left">
-                                <th className="p-2 text-left">Product Name</th>
-                                <th className="p-2 text-left">Product Description</th>
-                                <th className="p-2 text-left">Quantity</th>
-                                <th className="p-2 text-left">Actions</th> {/* Added Actions column */}
-                            </tr>
-                        </thead>
-                        {products && 
-                            <tbody>
-                                {filteredProducts.map((product, index) => (
-                                    <tr key={product.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
-                                        <td className="p-2 text-left border border-purple-800">{product?.name}</td>
-                                        <td className="p-2 text-left border border-purple-800">{product?.description}</td>
-                                        <td className="p-2 text-left border border-purple-800">{product?.quantity}</td>
-                                        <td className="p-2 text-left border border-purple-800">
-                                            <button onClick={() => handleRequestClick(product)} className="bg-purple-800 text-white px-4 py-2 rounded">Request</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        }
-                    </table>
+                    {isPopupOpen && (
+                        <RequestProduct product={selectedProduct} onClose={handlePopupClose} clientID={userID}></RequestProduct>
+                    )}
                 </div>
-
-                {isPopupOpen && (
-                    <RequestProduct product={selectedProduct} onClose={handlePopupClose} clientID={userID}></RequestProduct>
-                )}
             </div>
         </div>
         

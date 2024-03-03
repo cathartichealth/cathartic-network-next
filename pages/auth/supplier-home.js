@@ -133,7 +133,7 @@ export default function SupplierHome() {
                             {requests.map((request, index) => 
                                 <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
                                     <td className="p-2 border border-purple-800"> { clients[request.clientID] ? 
-                                        clients[request.clientID].first_name + clients[request.clientID].last_name
+                                        clients[request.clientID].first_name + " " + clients[request.clientID].last_name
                                         : "Loading..."
                                     } </td>
                                     <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
