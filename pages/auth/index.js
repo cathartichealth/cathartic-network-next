@@ -29,15 +29,7 @@ export default function UserAuth() {
     fetchUserData();
   }, []);
 
-  useEffect(() => {
-    // Disable vertical scrolling on the body element
-    document.body.style.overflowY = 'hidden';
 
-    // Re-enable scrolling on component unmount
-    return () => {
-        document.body.style.overflowY = 'auto';
-    };
-  }, []);
 
   const checkEmailExsts = async(uemail) => {
     try{
