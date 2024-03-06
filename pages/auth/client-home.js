@@ -3,7 +3,7 @@ import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { createUser } from '../../src/graphql/mutations'
 import { CheckboxField, TextField, useTheme, View, Image } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
-import { requestsByClientID, getProduct } from '@/src/graphql/queries'; 
+import {requestsByClientID, getProduct, listRequests} from '@/src/graphql/queries';
 
 export default function ClientHome() {
     let userInfo;
@@ -35,11 +35,15 @@ export default function ClientHome() {
         async function fetchRequests() {
             try {
                 const response = await API.graphql(
-                    graphqlOperation(requestsByClientID, {
-                        clientID,
+                    graphqlOperation(listRequests, {
+                        filter: {
+                            clientID: { eq: dataID },
+                            _deleted: { ne: true}
+                        }
                     })
                 );
-                const requestItems = response.data.requestsByClientID.items;
+
+                const requestItems = response.data.listRequests.items;
                 console.log(requestItems)
                 setRequests(requestItems);
 

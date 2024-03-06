@@ -33,9 +33,15 @@ export default function SupplierHome() {
             try {
                 const response = await API.graphql(
                     graphqlOperation(listRequests, {
-                        filter: { supplierID: { eq: dataID } }
+                        filter: {
+                            supplierID: { eq: dataID },
+                            // not equal to true
+                            _deleted: { ne: true}
+                        }
                     })
                 );
+
+                console.log("query result", response.data.listRequests.items)
             
                 const requestItems = response.data.listRequests.items;
                 console.log(requestItems);
