@@ -42,7 +42,7 @@ function Sidebar() {
     
 
     return (
-        <div className="flex-none bg-purple-800 h-screen w-220px min-w-[220px] flex flex-col items-center">
+        <div className="flex-none bg-purple-800 h-screen w-full flex flex-col items-center">
             <div className="flex justify-between items-center">
                 <img
                     className="w-24 h-24 content-start"

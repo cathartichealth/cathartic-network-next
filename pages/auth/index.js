@@ -220,7 +220,9 @@ export default function UserAuth() {
       {({ user }) => (
         <main>
           <div className="flex flex-row h-screen">
-            <Sidebar/>
+            <div className="w-1/5">
+              <Sidebar/>
+            </div>
             <div className="flex flex-col w-full overflow-auto">
               <div className="m-5 mt-7 text-3xl">
                 <div className="text-purple-800 font-semi">
