@@ -2,6 +2,12 @@ import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/datastore";
 
+export enum StatusEnum {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  DENIED = "DENIED"
+}
+
 export enum ProgramEnum {
   PERIOD_CARE = "PERIOD_CARE",
   FOOT_HEALTH = "FOOT_HEALTH",
@@ -25,6 +31,7 @@ type EagerRequest = {
   readonly clientID: string;
   readonly productID: string;
   readonly supplierID?: string | null;
+  readonly status?: StatusEnum | keyof typeof StatusEnum | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -39,6 +46,7 @@ type LazyRequest = {
   readonly clientID: string;
   readonly productID: string;
   readonly supplierID?: string | null;
+  readonly status?: StatusEnum | keyof typeof StatusEnum | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

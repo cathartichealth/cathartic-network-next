@@ -38,6 +38,15 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "status": {
+                    "name": "status",
+                    "isArray": false,
+                    "type": {
+                        "enum": "StatusEnum"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -370,6 +379,14 @@ export const schema = {
         }
     },
     "enums": {
+        "StatusEnum": {
+            "name": "StatusEnum",
+            "values": [
+                "PENDING",
+                "APPROVED",
+                "DENIED"
+            ]
+        },
         "ProgramEnum": {
             "name": "ProgramEnum",
             "values": [
@@ -388,5 +405,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "36ae72acaaeda32da3e96d625a1c3baa"
+    "version": "3efff8a51a900eacc07d89667b43a58f"
 };

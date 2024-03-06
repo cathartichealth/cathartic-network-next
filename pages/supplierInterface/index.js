@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { useRouter } from 'next/navigation';
-import {API, Auth, graphqlOperation} from 'aws-amplify';
+import {API, Auth, graphqlOperation, Storage } from 'aws-amplify';
 import {listProducts, productsByUserID} from '@/src/graphql/queries';
 import {createProduct, updateProduct, deleteProduct} from '@/src/graphql/mutations';
 import AddProduct from '../../components/addproduct';
@@ -77,6 +77,19 @@ const SupplierInterface = ({userId}) => {
         };
     }, []);
 
+    useEffect(() => {
+        console.log(products)
+    }, [products])
+
+    useEffect(() => {
+        // Disable vertical scrolling on the body element
+        document.body.style.overflowY = 'hidden';
+
+        // Re-enable scrolling on component unmount
+        return () => {
+            document.body.style.overflowY = 'auto';
+        };
+    }, []);
 
     useEffect(() => {
         async function fetchProducts() {
@@ -95,7 +108,22 @@ const SupplierInterface = ({userId}) => {
                 console.log('GraphQL Response:', response);
                 const productData = response.data.listProducts.items;
                 if (productData) {
-                    setProducts(productData);
+                    const productsWithImageLinks = await Promise.all(productData.map(async (product) => {
+                        if (product.imageKey) {
+                            try {
+                                const imageUrl = await Storage.get(product.imageKey, { level: 'public' });
+                                return { ...product, imagelink: imageUrl };
+                            } catch (error) {
+                                console.error(`Error fetching image for product ${product.id}:`, error);
+                                return {...product, imagelink: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"};
+                                
+                                
+                            }
+                        } else {
+                            return {...product, imagelink: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"};
+                        }
+                    }));
+                    setProducts(productsWithImageLinks);
                 } else {
                     console.error('No products found in the response.');
                 }
@@ -197,11 +225,9 @@ const SupplierInterface = ({userId}) => {
 
     return (
         
-        <div className="flex flex-row">
-            <div className="sticky">
-                <Sidebar/>
-            </div>
-            <div className="w-full mt-7">
+        <div className="flex flex-row h-screen">
+            <Sidebar/>
+            <div className="flex flex-col w-full overflow-auto">
                 <div className="text-purple-800 text-3xl font-semi px-4 py-2">
                     Your Products
                 </div>
@@ -287,11 +313,33 @@ const SupplierInterface = ({userId}) => {
                                 ) : (
                                     // View mode
                                     <>
-                                    <td className="p-2">{product.name}</td>
-                                    <td className="p-2">{product.description}</td>
-                                    <td className="p-2">{product.quantity}</td>
-                                    <td className="p-2">{product.type}</td>
                                     <td className="p-2">
+                                        <div className="flex flex-col">
+                                            <div>
+                                                {product?.name}
+                                            </div>
+                                            <img
+                                                src={product?.imagelink}
+                                                className="w-[150px] h-[150px] align-top"
+                                            />
+                                        </div>
+                                    </td>
+                                    <td className="p-2 text-left border border-purple-800  align-top">
+                                        <div>
+                                            {product?.description}
+                                        </div>
+                                    </td>
+                                    <td className="p-2 text-left border border-purple-800  align-top">
+                                        <div>
+                                            {product?.quantity}
+                                        </div>
+                                    </td>
+                                    <td className="p-2 text-left border border-purple-800  align-top">
+                                        <div>
+                                            {product?.type}
+                                        </div>
+                                    </td>
+                                    <td className="p-2 align-top">
                                         <button
                                             onClick={() => editProduct(product)}
                                             className="bg-purple-800 text-white rounded-md px-4 py-2 mr-2"

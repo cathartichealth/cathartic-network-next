@@ -9,11 +9,13 @@ export const getRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -30,14 +32,17 @@ export const listRequests = /* GraphQL */ `
         clientID
         productID
         supplierID
+        status
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -60,14 +65,17 @@ export const syncRequests = /* GraphQL */ `
         clientID
         productID
         supplierID
+        status
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -92,14 +100,17 @@ export const requestsByClientID = /* GraphQL */ `
         clientID
         productID
         supplierID
+        status
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -124,14 +135,17 @@ export const requestsByProductID = /* GraphQL */ `
         clientID
         productID
         supplierID
+        status
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -148,12 +162,15 @@ export const getProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -172,15 +189,17 @@ export const listProducts = /* GraphQL */ `
         type
         unit
         userID
+        imageKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        imageKey
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -205,14 +224,17 @@ export const syncProducts = /* GraphQL */ `
         type
         unit
         userID
+        imageKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -239,14 +261,17 @@ export const productsByUserID = /* GraphQL */ `
         type
         unit
         userID
+        imageKey
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -265,16 +290,19 @@ export const getUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -300,9 +328,11 @@ export const listUsers = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -334,43 +364,11 @@ export const syncUsers = /* GraphQL */ `
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
-
-export const listProductsByUser = /* GraphQL */ `
-  query ListProductsByUser(
-    $userID: ID!
-    $limit: Int
-    $nextToken: String
-  ) {
-    listProducts(
-      filter: {
-        userID: {
-          eq: $userID
-        }
-      }
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        name
-        description
-        quantity
-        type
-        unit
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-    }
-  }
-`;
-

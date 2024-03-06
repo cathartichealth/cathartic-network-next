@@ -9,11 +9,13 @@ export const onCreateRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -25,11 +27,13 @@ export const onUpdateRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -41,11 +45,13 @@ export const onDeleteRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -62,12 +68,15 @@ export const onCreateProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -84,12 +93,15 @@ export const onUpdateProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -106,12 +118,15 @@ export const onDeleteProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -130,16 +145,19 @@ export const onCreateUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -158,16 +176,19 @@ export const onUpdateUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -186,16 +207,19 @@ export const onDeleteUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;

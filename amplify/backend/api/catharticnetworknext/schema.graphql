@@ -1,9 +1,16 @@
+enum StatusEnum {
+  PENDING
+  APPROVED
+  DENIED
+}
+
 type Request @model @auth(rules: [{allow: public}]) {
   id: ID!
   quantity: Int
   clientID: ID! @index(name: "byUser")
   productID: ID! @index(name: "byProduct")
   supplierID: ID
+  status: StatusEnum
 }
 
 enum ProgramEnum {

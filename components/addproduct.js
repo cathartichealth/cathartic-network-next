@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { API, Auth } from 'aws-amplify';
+import { API, Auth, Storage } from 'aws-amplify';
 import { ProgramEnum } from '@/src/models';
 import {createProduct} from '@/src/graphql/mutations';
 
@@ -8,6 +8,7 @@ const AddProduct = ({ onClose }) => {
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
     const [quantity, setQuantity] = useState('');
+    const [image, setImage] = useState();
     
     let userInfo;
     const [dataID, setID] = useState('');
@@ -33,13 +34,12 @@ const AddProduct = ({ onClose }) => {
           return;
       }
 
-      let imageKey = '';
+      let inputImageKey = '';
       if (image) {
         const result = await Storage.put(image.name, image, {
           contentType: image.type,
         });
-        imageKey = result.key;
-        console.log(imageKey)
+        inputImageKey = result.key;
       }
 
       let enumType;
@@ -60,9 +60,10 @@ const AddProduct = ({ onClose }) => {
         quantity: parseInt(quantity),
         type: type,
         userID: dataID,
-        imageKey: imageKey,
-        _deleted: false
+        imageKey: inputImageKey,
+        // _deleted: false
       };
+      console.log(newProduct);
     
       try {
           const response = await API.graphql({
@@ -79,6 +80,7 @@ const AddProduct = ({ onClose }) => {
               setName('');
               setDescription('');
               setQuantity('');
+              setImage(null);
               onClose();
           } else if (response.errors) {
               console.error('Mutation errors:', response.errors);
@@ -87,12 +89,6 @@ const AddProduct = ({ onClose }) => {
         console.error('Error fetching user data:', error);
       }
     };
-
-
-  
-
-  
-
 
 
   const handleImageChange = (e) => {
@@ -166,7 +162,7 @@ const AddProduct = ({ onClose }) => {
 
         <button
           onClick={handleAddProduct}
-          className="bg-white text-purple-400 px-4 py-2 rounded text-black"
+          className="bg-white text-purple-400 px-4 py-2 rounded "
         >
           Add Product
         </button>

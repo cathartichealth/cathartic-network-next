@@ -12,11 +12,13 @@ export const createRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -31,11 +33,13 @@ export const updateRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -50,11 +54,13 @@ export const deleteRequest = /* GraphQL */ `
       clientID
       productID
       supplierID
+      status
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -74,16 +80,18 @@ export const createProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
-
 export const updateProduct = /* GraphQL */ `
   mutation UpdateProduct(
     $input: UpdateProductInput!
@@ -100,12 +108,15 @@ export const updateProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -125,12 +136,15 @@ export const deleteProduct = /* GraphQL */ `
       Requests {
         nextToken
         startedAt
+        __typename
       }
+      imageKey
       createdAt
       updatedAt
-      _deleted
       _version
+      _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -152,16 +166,19 @@ export const createUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -183,16 +200,19 @@ export const updateUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -214,16 +234,19 @@ export const deleteUser = /* GraphQL */ `
       Products {
         nextToken
         startedAt
+        __typename
       }
       Requests {
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;

@@ -6,6 +6,7 @@
   "guestAccess": [],
   "authAccess": [
     "CREATE_AND_UPDATE",
-    "DELETE"
+    "DELETE",
+    "READ"
   ]
 }
