@@ -67,13 +67,13 @@ function Wishlist() {
     };
 
     return (
-        <div className="flex">
-            <div className="sticky">
+        <div className="flex flex-row">
+            <div className="w-1/5">
                 <Sidebar /> {/* Render Sidebar component */}
             </div>
             <div className="flex flex-col items-center justify-center h-screen w-full">
                 <h1 className="text-3xl font-semibold mb-4">Request Product</h1>
-                <div className="w-full max-w-sm">
+                <div className="">
                     <div className="mb-4">
                         <label htmlFor="productName" className="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
                         <input

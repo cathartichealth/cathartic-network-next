@@ -1,14 +1,28 @@
 import { Amplify, Auth, API, graphqlOperation } from 'aws-amplify';
 import { useState, useEffect } from 'react';
-import { listRequests, getProduct, getUser } from '@/src/graphql/queries'; 
+import { listRequests, getProduct, getUser } from '@/src/graphql/queries';
+import {deleteRequest, updateRequest} from "@/src/graphql/mutations";
+import { StatusEnum} from "@/src/models";
 
 export default function SupplierHome() {
     let userInfo;
     const [dataID, setID] = useState('');
-    const [requests, setRequests] = useState([]);
+    const [pendingRequests, setPendingRequests] = useState([]);
+    const [acceptedRequests, setAcceptedRequests] = useState([]);
     const [products, setProducts] = useState({});
     const [clients, setClients] = useState({});
     let date;
+
+    useEffect(() => {
+        if(pendingRequests == []){
+            return;
+        }
+        console.log("Pending Requests");
+        console.log(pendingRequests);
+        console.log("Accepted Requests");
+        console.log(acceptedRequests);
+
+    }, [pendingRequests, acceptedRequests]);
 
     useEffect(() => {
         const handleUserInfo = async () => {
@@ -24,6 +38,74 @@ export default function SupplierHome() {
 
     }, []);
 
+
+
+    const handleAcceptRequest = (request) => {
+        if (window.confirm("Are you sure you want to accept this request?")) {
+            // Perform accept action
+            const acceptRequest = async () => {
+                try {
+                    // Update the status of the request to "ACCEPTED"
+                    const updatedRequest = {
+                        id: request.id, // Include the ID of the request to update
+                        status: 'APPROVED', // Update the status to "ACCEPTED
+                        _version: request._version, // Include the version of the request to update
+                    };
+                    // Define the variables for the mutation
+                    console.log("updated requests", updatedRequest)
+                    // Update the request status in the backend
+
+                    const response = await API.graphql({
+                        query: updateRequest,
+                        variables: {
+                            input: updatedRequest,
+                        },
+                    });
+
+                    console.log('GraphQL response:', response);
+
+                    // Move the request from pendingRequests to acceptedRequests
+                    const updatedPendingRequests = pendingRequests.filter(req => req.id !== request.id);
+                    setPendingRequests(updatedPendingRequests);
+                    console.log(pendingRequests);
+                    setAcceptedRequests([...acceptedRequests, updatedRequest]);
+                    console.log(acceptedRequests);
+                } catch (error) {
+                    console.error('Error accepting request:', error);
+                }
+            };
+            acceptRequest();
+        }
+    };
+
+    const handleDenyRequest = (request) => {
+        if (window.confirm("Are you sure you want to deny this request?")) {
+            // Perform deny action
+            const denyRequest = async () => {
+                try {
+                    // Delete the request from the backend
+                    const response = await API.graphql({
+                        query: deleteRequest,
+                        variables: {
+                            input: {
+                                id: request.id,
+                                _version: request._version,
+                            },
+                        },
+                    });
+
+                    // Remove the request from pendingRequests
+                    const updatedPendingRequests = pendingRequests.filter(req => req.id !== request.id);
+                    setPendingRequests(updatedPendingRequests);
+                } catch (error) {
+                    console.error('Error denying request:', error);
+                }
+            };
+
+            denyRequest();
+        }
+    };
+
     useEffect(() => {
         if(dataID === ''){
             return;
@@ -33,13 +115,20 @@ export default function SupplierHome() {
             try {
                 const response = await API.graphql(
                     graphqlOperation(listRequests, {
-                        filter: { supplierID: { eq: dataID } }
+                        filter: {
+                            supplierID: { eq: dataID },
+                            // not equal to true
+                            _deleted: { ne: true}
+                        }
                     })
                 );
-            
                 const requestItems = response.data.listRequests.items;
-                console.log(requestItems);
-                setRequests(requestItems);
+
+                const pending = requestItems.filter(request => request.status === 'PENDING');
+                const accepted = requestItems.filter(request => request.status === 'APPROVED');
+
+                setPendingRequests(pending);
+                setAcceptedRequests(accepted);
 
                 // Fetch product data for each request
                 for (const request of requestItems) {
@@ -114,39 +203,85 @@ export default function SupplierHome() {
     return (
         <div>
             <div className="text-purple-800 text-3xl font-semi pt-4">
-                Your Requests
+                Pending Requests
             </div>
 
             <div className="overflow-x-auto">
                 <table className="w-full table-auto border border-purple-800 rounded-md">
                     <thead>
-                        <tr className="bg-purple-800 text-white text-left">
-                            <th className="p-2 text-left">Client Name</th>
-                            <th className="p-2 text-left">Product Name</th>
-                            <th className="p-2 text-left">Product Description</th>
-                            <th className="p-2 text-left">Quantity</th>
-                            <th className="p-2 text-left">Requested At:</th>
-                        </tr>
+                    <tr className="bg-purple-800 text-white text-left">
+                        <th className="p-2 text-left">Client Name</th>
+                        <th className="p-2 text-left">Product Name</th>
+                        <th className="p-2 text-left">Product Description</th>
+                        <th className="p-2 text-left">Quantity</th>
+                        <th className="p-2 text-left">Requested At:</th>
+                        <th className="p-2 text-left">Actions:</th>
+                    </tr>
                     </thead>
-                    {requests && clients && products && 
+                    {pendingRequests && clients && products &&
                         <tbody>
-                            {requests.map((request, index) => 
-                                <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
-                                    <td className="p-2 border border-purple-800"> { clients[request.clientID] ? 
-                                        clients[request.clientID].first_name + " " + clients[request.clientID].last_name
-                                        : "Loading..."
-                                    } </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
-                                </tr>
-                            )}
+                        {pendingRequests.map((request, index) =>
+                            <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
+                                <td className="p-2 border border-purple-800"> { clients[request.clientID] ?
+                                    clients[request.clientID].first_name + " " + clients[request.clientID].last_name
+                                    : "Loading..."
+                                } </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800">
+                                    <div className="flex flex-row">
+                                        <button className="mr-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                                                onClick={() => handleAcceptRequest(request)}>
+                                            Accept
+                                        </button>
+                                        <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                                                onClick={() => handleDenyRequest(request)}>
+                                            Deny
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
                         </tbody>
                     }
                 </table>
             </div>
 
+            <div className="text-purple-800 text-3xl font-semi pt-4">
+                Accepted Requests
+            </div>
+
+            <div className="overflow-x-auto">
+                <table className="w-full table-auto border border-purple-800 rounded-md">
+                    <thead>
+                    <tr className="bg-purple-800 text-white text-left">
+                        <th className="p-2 text-left">Client Name</th>
+                        <th className="p-2 text-left">Product Name</th>
+                        <th className="p-2 text-left">Product Description</th>
+                        <th className="p-2 text-left">Quantity</th>
+                        <th className="p-2 text-left">Requested At:</th>
+                    </tr>
+                    </thead>
+                    {acceptedRequests && clients && products &&
+                        <tbody>
+                        {acceptedRequests.map((request, index) =>
+                            <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
+                                <td className="p-2 border border-purple-800"> { clients[request.clientID] ?
+                                    clients[request.clientID].first_name + " " + clients[request.clientID].last_name
+                                    : "Loading..."
+                                } </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    }
+                </table>
+            </div>
         </div>
     );
 }
