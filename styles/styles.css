@@ -3,3 +3,7 @@
 @import 'tailwindcss/utilities';
 
 @import '@fortawesome/fontawesome-free/css/all.css';
+
+button[type="submit"] {
+    @apply bg-purple-800
+ }

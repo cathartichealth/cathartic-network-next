@@ -211,40 +211,58 @@ export default function UserAuth() {
     }
   }
 
+  const amplifyAuthenticatorStyles = `
+    [data-amplify-authenticator] {
+      --amplify-components-authenticator-router-box-shadow: 0 0 16px var(--amplify-colors-overlay-10);
+      --amplify-components-authenticator-router-border-width: 0;
+      --amplify-components-authenticator-form-padding: var(--amplify-space-medium) var(--amplify-space-xl) var(--amplify-space-xl);
+      --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px var(--amplify-colors-purple-90);
+      --amplify-components-tabs-item-active-border-color: var(--amplify-colors-purple-90);
+      --amplify-components-tabs-item-color: var(--amplify-colors-purple-90);
+      --amplify-components-tabs-item-active-color: var(--amplify-colors-purple-90);
+      --amplify-components-button-link-color: var(--amplify-colors-purple-90);
+    }
+  `;
+
   return (
-    <Authenticator 
-      formFields={formFields}
-      services={services}
-      components = {components}
-    >
-      {({ user }) => (
-        <main>
-          <div className="flex flex-row h-screen">
-            <div className="w-1/5">
-              <Sidebar/>
-            </div>
-            <div className="flex flex-col w-full overflow-auto">
-              <div className="m-5 mt-7 text-3xl">
-                <div className="text-purple-800 font-semi">
-                  Profile Page
-                </div>
-                <div className="text-sm"> 
-                  <div>
-                    Hello {user.attributes['custom:first_name']} {user.attributes['custom:last_name']}!
+    <div>
+      <style>
+         {amplifyAuthenticatorStyles}
+      </style>
+      <Authenticator 
+        formFields={formFields}
+        services={services}
+        components = {components}
+      >
+        {({ user }) => (
+          <main>
+            <div className="flex flex-row h-screen">
+              <div className="w-1/5">
+                <Sidebar/>
+              </div>
+              <div className="flex flex-col w-full overflow-auto">
+                <div className="m-5 mt-7 text-3xl">
+                  <div className="text-purple-800 font-semi">
+                    Profile Page
                   </div>
-                  { (user.attributes['custom:role'] === "CLIENT") && 
-                    <ClientHome/>
-                  }
-                  { (user.attributes['custom:role'] === "SUPPLIER") && 
-                    <SupplierHome/>
-                  }
-                  <button className="bg-purple-800 text-white py-2 px-4 rounded-full mt-4" onClick={handleSignout}>Sign out</button>
+                  <div className="text-sm"> 
+                    <div>
+                      Hello {user.attributes['custom:first_name']} {user.attributes['custom:last_name']}!
+                    </div>
+                    { (user.attributes['custom:role'] === "CLIENT") && 
+                      <ClientHome/>
+                    }
+                    { (user.attributes['custom:role'] === "SUPPLIER") && 
+                      <SupplierHome/>
+                    }
+                    <button className="bg-purple-800 text-white py-2 px-4 rounded-full mt-4" onClick={handleSignout}>Sign out</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
-      )}
-    </Authenticator>
+          </main>
+        )}
+      </Authenticator>
+    </div>
   )
 }
