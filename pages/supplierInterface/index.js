@@ -8,10 +8,6 @@ import Sidebar from '@/components/sidebar';
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
-    const [newName, setNewName] = useState('');
-    const [newDescription, setNewDescription] = useState('');
-    const [newQuantity, setNewQuantity] = useState('');
-    const [newType, setNewType] = useState('');
 
     const [editedProductId, setEditedProductId] = useState(null);
     const [editedName, setEditedName] = useState(''); // States for editing
