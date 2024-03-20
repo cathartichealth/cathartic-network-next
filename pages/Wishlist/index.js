@@ -1,30 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { API, Auth } from 'aws-amplify';
-import { createRequest } from '../../src/graphql/mutations';
+import { createWishlistItem } from '../../src/graphql/mutations';
+import { useRouter } from 'next/navigation';
 import Sidebar from '../../components/sidebar'; // Import Sidebar component
 
 function Wishlist() {
     const [productName, setProductName] = useState('');
     const [productDescription, setProductDescription] = useState('');
 
-    const handleRequestSubmit = async () => {
+    const [currentUser, setCurrentUser] = useState(null);
+    const [userID, setID] = useState('');
+    const [role, setRole] = useState('');
+    const router = useRouter();
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser();
+                setCurrentUser(user);
+                console.log(user)
+                setID(user.attributes['custom:dataID']);
+                console.log(userID);
+                setRole(user.attributes['custom:role'])
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        if(role === ''){
+            return;
+        }
+        if(role === 'SUPPLIER'){
+            router.push('/auth');
+        }
+    }, [role]);
+
+
+    const handleWishlistSubmit = async () => {
         try {
             // Create a new request object
-            const newRequest = {
-                productName: productName,
-                productDescription: productDescription,
+            const newWishlistItem = {
+                name: productName,
+                description: productDescription,
                 // Add any other necessary fields here
             };
 
             // Call the API to create the request
             await API.graphql({
-                query: createRequest,
-                variables: { input: newRequest },
+                query: createWishlistItem,
+                variables: { input: newWishlistItem },
             });
 
             // Reset input fields after submission
             setProductName('');
             setProductDescription('');
+            alert("Successfully added to wishlist");
 
             // Optionally, you can display a success message or navigate to another page
         } catch (error) {
@@ -63,7 +96,7 @@ function Wishlist() {
                         />
                     </div>
                     <button
-                        onClick={handleRequestSubmit}
+                        onClick={handleWishlistSubmit}
                         className="bg-purple-800 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="button"
                     >
