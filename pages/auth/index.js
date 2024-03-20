@@ -213,10 +213,8 @@ export default function UserAuth() {
 
   const amplifyAuthenticatorStyles = `
     [data-amplify-authenticator] {
-      --amplify-components-authenticator-router-box-shadow: 0 0 16px var(--amplify-colors-overlay-10);
-      --amplify-components-authenticator-router-border-width: 0;
-      --amplify-components-authenticator-form-padding: var(--amplify-space-medium) var(--amplify-space-xl) var(--amplify-space-xl);
-      --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px var(--amplify-colors-purple-90);
+      --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 1px var(--amplify-colors-purple-90);
+      --amplify-components-tabs-item-active-border-width: 2px;
       --amplify-components-tabs-item-active-border-color: var(--amplify-colors-purple-90);
       --amplify-components-tabs-item-color: var(--amplify-colors-purple-90);
       --amplify-components-tabs-item-active-color: var(--amplify-colors-purple-90);
