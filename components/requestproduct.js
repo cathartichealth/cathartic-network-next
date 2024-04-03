@@ -23,6 +23,7 @@ const RequestProduct = ({ product, onClose, clientID }) => {
                     clientID: clientID,
                     productID: product.id, // Use productID as provided by your schema
                     supplierID: product.userID, // Use userID as provided by your schema
+                    status: "PENDING",
                 },
             };
 

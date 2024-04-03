@@ -8,10 +8,6 @@ import Sidebar from '@/components/sidebar';
 
 const SupplierInterface = ({userId}) => {
     const [products, setProducts] = useState([]);
-    const [newName, setNewName] = useState('');
-    const [newDescription, setNewDescription] = useState('');
-    const [newQuantity, setNewQuantity] = useState('');
-    const [newType, setNewType] = useState('');
 
     const [editedProductId, setEditedProductId] = useState(null);
     const [editedName, setEditedName] = useState(''); // States for editing
@@ -226,7 +222,9 @@ const SupplierInterface = ({userId}) => {
     return (
         
         <div className="flex flex-row h-screen">
-            <Sidebar/>
+            <div className="w-1/5">
+            <   Sidebar/>
+            </div>
             <div className="flex flex-col w-full overflow-auto">
                 <div className="text-purple-800 text-3xl font-semi px-4 py-2">
                     Your Products

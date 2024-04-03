@@ -117,8 +117,9 @@ function ProductList() {
 
     return (
         <div className="flex flex-row h-screen">
-            
-            <Sidebar/>
+            <div className="w-1/5">
+                <Sidebar/>
+            </div>
             <div className="flex flex-col w-full overflow-auto">
                 <div className="product-container bg-white text-purple-800 text-center py-8 w-full">
                     <div className="flex flex-row px-4 py-2 justify-between">
