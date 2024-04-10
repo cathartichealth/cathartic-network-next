@@ -11,6 +11,8 @@ export default function SupplierHome() {
     const [acceptedRequests, setAcceptedRequests] = useState([]);
     const [products, setProducts] = useState({});
     const [clients, setClients] = useState({});
+    const [showModal, setShow] = useState(false);
+    const [selectedClient, setSelected] = useState({});
     let date;
 
     useEffect(() => {
@@ -37,8 +39,6 @@ export default function SupplierHome() {
         handleUserInfo();
 
     }, []);
-
-
 
     const handleAcceptRequest = (request) => {
         if (window.confirm("Are you sure you want to accept this request?")) {
@@ -200,8 +200,47 @@ export default function SupplierHome() {
         fetchRequests();
     }, [dataID])
 
+    const handleSelect = (client) => {
+        setSelected(client);
+        setShow(true);
+    }
+
+    const ClientInfo = (props) => {
+        const client = props.client;
+        return (
+            <div>
+                <div className="fixed top-0 left-0 w-full h-full flex z-50 items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg p-8 w-1/3">
+                        <div className='flex flex-col mb-5'>
+                            <p className="text-lg mb-2"> {client.first_name + " " + client.last_name}</p>
+                            <p className="text-md mb-2"> {client.bio ? client.bio : "No bio yet."}</p>
+                        </div>
+                        
+                        <div className="flex justify-right">
+                            <button
+                                id="exit"
+                                className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-purple rounded-lg"
+                                onClick={() => {props.handleClose()}}
+                            >
+                                Exit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
+            {
+                showModal &&
+                <ClientInfo
+                    handleClose={() => {setShow(false)}}
+                    client={selectedClient}
+                />
+            }
+
             <div className="text-purple-800 text-3xl font-semi pt-4">
                 Pending Requests
             </div>
@@ -222,10 +261,14 @@ export default function SupplierHome() {
                         <tbody>
                         {pendingRequests.map((request, index) =>
                             <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
-                                <td className="p-2 border border-purple-800"> { clients[request.clientID] ?
-                                    clients[request.clientID].first_name + " " + clients[request.clientID].last_name
-                                    : "Loading..."
-                                } </td>
+                                <td className="p-2 border border-purple-800"> 
+                                    <button className="border-b underline-offset-0 border-purple-800" onClick={() => {handleSelect(clients[request.clientID])}}>
+                                    { clients[request.clientID] ?
+                                        clients[request.clientID].first_name + " " + clients[request.clientID].last_name
+                                        : "Loading..."
+                                    } 
+                                    </button>
+                                </td>
                                 <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
                                 <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
                                 <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>

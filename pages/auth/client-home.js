@@ -3,13 +3,16 @@ import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import { createUser } from '../../src/graphql/mutations'
 import { CheckboxField, TextField, useTheme, View, Image } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
-import {requestsByClientID, getProduct, listRequests} from '@/src/graphql/queries';
+import {requestsByClientID, getProduct, listRequests, getUser} from '@/src/graphql/queries';
 
 export default function ClientHome() {
     let userInfo;
     const [dataID, setID] = useState('');
     const [requests, setRequests] = useState([]);
     const [products, setProducts] = useState({});
+    const [suppliers, setSuppliers] = useState({});
+    const [showModal, setShow] = useState(false);
+    const [selectedPark, setSelected] = useState({});
     let date;
 
     useEffect(() => {
@@ -95,6 +98,25 @@ export default function ClientHome() {
                         }));
                     }
                 }
+
+                for(const request of requestItems){
+                    console.log("checking for request ", request.productID);
+                    const supplierID = request.supplierID;
+                    console.log("supplierID:", supplierID);
+                    if(!suppliers[supplierID]) {
+                        const supplierResponse = await API.graphql(
+                            graphqlOperation(getUser, {
+                                id: supplierID,
+                            })
+                        );
+                        console.log(supplierResponse.data);
+                        const supplier = supplierResponse.data.getUser;
+                        setSuppliers((prevSuppliers) => ({
+                            ...prevSuppliers,
+                            [supplierID]: supplier,
+                        }));
+                    }
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -103,8 +125,46 @@ export default function ClientHome() {
         fetchRequests();
     }, [dataID])
 
+    const handleSelect = (park) => {
+        setSelected(park);
+        setShow(true);
+    }
+
+    const SupplierInfo = (props) => {
+        const supplier = props.supplier;
+        return (
+            <div>
+                <div className="fixed top-0 left-0 w-full h-full flex z-50 items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg p-8 w-1/3">
+                        <div className='flex flex-col mb-5'>
+                            <p className="text-lg mb-2"> {supplier.first_name + " " + supplier.last_name}</p>
+                            <p className="text-md mb-2"> {supplier.bio ? supplier.bio : "No bio yet."}</p>
+                        </div>
+                        
+                        <div className="flex justify-right">
+                            <button
+                                id="exit"
+                                className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-purple rounded-lg"
+                                onClick={() => {props.handleClose()}}
+                            >
+                                Exit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
+            {
+                showModal &&
+                <SupplierInfo
+                    handleClose={() => {setShow(false)}}
+                    supplier={selectedPark}
+                />
+            }
             <div className="text-purple-800 text-3xl font-semi pt-4">
                 Your Requests
             </div>
@@ -117,6 +177,7 @@ export default function ClientHome() {
                             <th className="p-2 text-left">Product Description</th>
                             <th className="p-2 text-left">Quantity</th>
                             <th className="p-2 text-left">Requested At:</th>
+                            <th className="p-2 text-left">Supplier</th>
                         </tr>
                     </thead>
                     {requests && 
@@ -127,6 +188,14 @@ export default function ClientHome() {
                                     <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
                                     <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
                                     <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
+                                    <td className="p-2 border border-purple-800"> 
+                                        <button className="border-b underline-offset-0 border-purple-800" onClick={() => {handleSelect(suppliers[request.supplierID])}}>
+                                            { suppliers[request.supplierID] ?
+                                        suppliers[request.supplierID].first_name + " " + suppliers[request.supplierID].last_name
+                                        : "Loading..."
+                                        }
+                                        </button>
+                                    </td>
                                 </tr>
                             )}
                         </tbody>
