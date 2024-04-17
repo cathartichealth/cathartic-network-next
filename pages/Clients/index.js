@@ -122,7 +122,7 @@ function ProductList() {
             <div className="flex flex-col w-full overflow-auto">
                 <div className="product-container bg-white text-purple-800 text-center py-8 w-full">
                     <div className="flex flex-row px-4 py-2 justify-between">
-                        <div className="text-purple-800 text-3xl font-semi">
+                        <div className="text-purple-800 font text-3xl font-semi">
                             Product List
                         </div>
 
@@ -141,9 +141,10 @@ function ProductList() {
                     </div>
 
                     <div className="overflow-x-auto px-4 w-full">
-                        <table className="w-full table-auto border-collapse border border-purple-800 rounded-md">
+                 
+                        <table className="w-full table-auto border-collapse border-separate border-spacing-y-2 rounded-md">
                             <thead>
-                                <tr className="bg-purple-800 text-white text-left">
+                                <tr className="bg-purple-800 shadow-xl text-white text-left">
                                     <th className="p-2 text-left">Product Name</th>
                                     <th className="p-2 text-left">Product Description</th>
                                     <th className="p-2 text-left">Quantity</th>
@@ -153,32 +154,33 @@ function ProductList() {
                             {products && 
                                 <tbody>
                                     {filteredProducts.map((product, index) => (
-                                        <tr key={product.id} className={index % 2 === 0 ? 'bg-white border border-purple-800' : 'bg-purple-100 border border-purple-800'}>
-                                            <td className="p-2 text-left border border-purple-800 align-middle">
+                                        <tr key={product.id} className="m-8 rounded-lg shadow-md">
+                                            <td className="p-2 text-left align-middle ">
                                                 <div className="flex flex-col">
-                                                    <div>
+                                                    <div className="p-2 text-left text-lg font-bold ">
                                                         {product?.name}
                                                     </div>
                                                     <img
                                                         src={product?.imagelink}
-                                                        className="w-[150px] h-[150px] align-top"
-                                                    />
+                                                        className="w-[125px] h-[125px] align-top rounded-lg shadow-md"
+                                                    />                                                 
                                                 </div>
                                             </td>
-                                            <td className="p-2 text-left border border-purple-800  align-top">
+                                            <td className="p-2 text-left text-lg">
                                                 <div>
                                                     {product?.description}
                                                 </div>
                                             </td>
-                                            <td className="p-2 text-left border border-purple-800  align-top">
+                                            <td className="p-2 text-left text-lg">
                                                 <div>
                                                     {product?.quantity}
                                                 </div>
                                             </td>
-                                            <td className="p-2 text-left border border-purple-800  align-top">
-                                                <button onClick={() => handleRequestClick(product)} className="bg-purple-800 text-white px-4 py-2 rounded">Request</button>
+                                            <td className="p-2 text-left">
+                                                <button onClick={() => handleRequestClick(product)} className="bg-purple-800 hover:bg-purple-700 text-white font-bold py-2 px-4 border-b-4 border-purple-950 hover:border-purple-800 rounded">Request</button>
                                             </td>
                                         </tr>
+                    
                                     ))}
                                 </tbody>
                             }
