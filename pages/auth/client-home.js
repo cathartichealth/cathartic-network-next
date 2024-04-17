@@ -1,15 +1,13 @@
 import { Amplify, Auth, API, graphqlOperation } from 'aws-amplify';
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
-import { createUser } from '../../src/graphql/mutations'
-import { CheckboxField, TextField, useTheme, View, Image } from '@aws-amplify/ui-react';
 import { useState, useEffect } from 'react';
-import {requestsByClientID, getProduct, listRequests} from '@/src/graphql/queries';
+import { requestsByClientID, getProduct, listRequests } from '@/src/graphql/queries';
 
 export default function ClientHome() {
     let userInfo;
     const [dataID, setID] = useState('');
     const [requests, setRequests] = useState([]);
     const [products, setProducts] = useState({});
+    const [acceptedRequests, setAcceptedRequests] = useState([]);
     let date;
 
     useEffect(() => {
@@ -28,7 +26,7 @@ export default function ClientHome() {
 
     useEffect(() => {
         const clientID = dataID;
-        if(clientID === ''){
+        if (clientID === '') {
             return;
         }
 
@@ -38,7 +36,7 @@ export default function ClientHome() {
                     graphqlOperation(listRequests, {
                         filter: {
                             clientID: { eq: dataID },
-                            _deleted: { ne: true}
+                            _deleted: { ne: true }
                         }
                     })
                 );
@@ -58,7 +56,6 @@ export default function ClientHome() {
                     var day = date.getDate();
                     var year = date.getFullYear() % 100; // Get last two digits of the year
 
-
                     var ampm = hours >= 12 ? 'PM' : 'AM';
                     hours = hours % 12;
                     hours = hours ? hours : 12; // Handle midnight (0 hours)
@@ -75,8 +72,8 @@ export default function ClientHome() {
                         day.toString().padStart(2, '0'),
                         year.toString().padStart(2, '0')
                     ].join('/');
-
                     // Concatenate time, AM/PM, and date
+
                     var formattedDateTime = formattedTime + ' ' + ampm + ' ' + formattedDate;
 
                     console.log(formattedDateTime);
@@ -95,6 +92,10 @@ export default function ClientHome() {
                         }));
                     }
                 }
+
+                // Filter accepted requests
+                const accepted = requestItems.filter(request => request.status === 'APPROVED');
+                setAcceptedRequests(accepted);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -112,28 +113,56 @@ export default function ClientHome() {
             <div className="overflow-x-auto">
                 <table className="w-full table-auto border border-purple-800 rounded-md">
                     <thead>
-                        <tr className="bg-purple-800 text-white text-left">
-                            <th className="p-2 text-left">Product Name</th>
-                            <th className="p-2 text-left">Product Description</th>
-                            <th className="p-2 text-left">Quantity</th>
-                            <th className="p-2 text-left">Requested At:</th>
-                        </tr>
+                    <tr className="bg-purple-800 text-white text-left">
+                        <th className="p-2 text-left">Product Name</th>
+                        <th className="p-2 text-left">Product Description</th>
+                        <th className="p-2 text-left">Quantity</th>
+                        <th className="p-2 text-left">Requested At:</th>
+                    </tr>
                     </thead>
-                    {requests && 
+                    {requests &&
                         <tbody>
-                            {requests.map((request, index) => 
-                                <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
-                                    <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
-                                </tr>
-                            )}
+                        {requests.map((request, index) =>
+                            <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
+                            </tr>
+                        )}
                         </tbody>
                     }
                 </table>
             </div>
 
+            <div className="text-purple-800 text-3xl font-semi pt-4">
+                Accepted Requests
+            </div>
+            <div className="overflow-x-auto">
+                <table className="w-full table-auto border border-purple-800 rounded-md">
+                    <thead>
+                    <tr className="bg-purple-800 text-white text-left">
+                        <th className="p-2 text-left">Product Name</th>
+                        <th className="p-2 text-left">Product Description</th>
+                        <th className="p-2 text-left">Quantity</th>
+                        <th className="p-2 text-left">Requested At:</th>
+                    </tr>
+                    </thead>
+                    {acceptedRequests &&
+                        <tbody>
+                        {acceptedRequests.map((request, index) =>
+                            <tr key={request.id} className={index % 2 === 0 ? 'bg-white' : 'bg-purple-100'}>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].name : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? products[request.productID].description : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.quantity : "Loading..."} </td>
+                                <td className="p-2 border border-purple-800"> {products[request.productID] ? request.createdAt : "Loading..."} </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    }
+                </table>
+            </div>
         </div>
     );
 }
+
